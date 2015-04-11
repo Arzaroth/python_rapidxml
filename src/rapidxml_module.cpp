@@ -1,7 +1,7 @@
 /*
 ** -*- coding: utf-8 -*-
 **
-** File: rapidxml.cpp
+** File: rapidxml_module.cpp
 ** by Arzaroth Lekva
 ** arzaroth@arzaroth.com
 **
@@ -10,6 +10,9 @@
 #include <Python.h>
 #include <structmember.h>
 #include <rapidxml.hpp>
+#include <rapidxml_print.hpp>
+#include <string>
+#include <cstring>
 
 #define STR(x) #x
 #define STRINGIFY(x) STR(x)
@@ -37,6 +40,7 @@ static PyObject* EXCEPT_NAME;
 typedef struct {
   PyObject_HEAD
   rapidxml::xml_document<> doc;
+  char* text;
 } OBJ_OBJECT;
 
 static void CAT(OBJECT_NAME, _dealloc)(OBJ_OBJECT* self) {
@@ -45,6 +49,7 @@ static void CAT(OBJECT_NAME, _dealloc)(OBJ_OBJECT* self) {
   #else
   self->ob_type->tp_free((PyObject*)self);
   #endif
+  free(self->text);
 }
 
 static PyObject* CAT(OBJECT_NAME, _new)(PyTypeObject* type,
@@ -55,19 +60,27 @@ static PyObject* CAT(OBJECT_NAME, _new)(PyTypeObject* type,
   self = (OBJ_OBJECT*)type->tp_alloc(type, 0);
   return (PyObject*)self;
 }
+#include <iostream>
 
 static int CAT(OBJECT_NAME, _init)(OBJ_OBJECT* self,
                                    PyObject* args,
                                    PyObject* kwds) {
-  char* text;
+  const char* text;
 
   static char* kwlist[] = {"text", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist,
                                    &text)) {
     return -1;
   }
+
+  self->text = strdup(text);
+  if (self->text == NULL) {
+    PyErr_SetString(EXCEPT_NAME, "Unable to allocate memory");
+    return -1;
+  }
+
   try {
-    self->doc.parse<0>(text);
+    self->doc.parse<rapidxml::parse_no_utf8>(self->text);
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(EXCEPT_NAME, e.what());
     return -1;
@@ -75,11 +88,31 @@ static int CAT(OBJECT_NAME, _init)(OBJ_OBJECT* self,
   return 0;
 }
 
+static PyObject* CAT(OBJECT_NAME, _unparse)(OBJ_OBJECT* self,
+                                            PyObject* args,
+                                            PyObject* kwds) {
+  int pretty = 0;
+  PyObject* obj = NULL;
+
+  static char* kwlist[] = {"pretty", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &obj)) {
+    pretty = 0;
+  } else if (obj) {
+    pretty = PyObject_IsTrue(obj);
+  }
+  std::string xml;
+  rapidxml::print(std::back_inserter(xml), self->doc,
+                  !pretty ? rapidxml::print_no_indenting : 0);
+  return Py_BuildValue("s", xml.c_str());
+}
+
 static PyMemberDef OBJ_MEMBERS[] = {
   {NULL}
 };
 
 static PyMethodDef OBJ_METHS[] = {
+  {"unparse", (PyCFunction)CAT(OBJECT_NAME, _unparse),
+   METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
 };
 
