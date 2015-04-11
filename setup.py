@@ -9,8 +9,8 @@
 from setuptools import setup, Extension
 
 rapidxml = Extension("rapidxml",
-                     define_macros=[('MAJOR_VERSION', '1',
-                                     'MINOR_VERSION', '0')],
+                     define_macros=[('MAJOR_VERSION', '1'),
+                                    ('MINOR_VERSION', '0')],
                      include_dirs=['./rapidxml-1.13/'],
                      sources=["rapidxml.cpp"],
 )
