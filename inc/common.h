@@ -15,7 +15,7 @@
 typedef struct {
   PyObject_HEAD
   rapidxml::xml_base<>* underlying_obj;
-  rapidxml::memory_pool<> memory_pool;
+  rapidxml::xml_document<>* document;
 } rapidxml_BaseObject;
 
 typedef struct {
@@ -30,6 +30,6 @@ extern PyTypeObject rapidxml_BaseType;
 extern PyTypeObject rapidxml_NodeType;
 extern PyTypeObject rapidxml_RapidXmlType;
 
-extern PyObject* RapidXmlError;
+extern PyObject* rapidxml_RapidXmlError;
 
 #endif /* !COMMON_H_ */

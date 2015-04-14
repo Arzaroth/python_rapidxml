@@ -48,18 +48,22 @@ static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
   if (from_file) {
     std::ifstream f(text, std::ios::binary);
     if (f.fail()) {
-      PyErr_SetString(RapidXmlError, strerror(errno));
+      PyErr_SetString(rapidxml_RapidXmlError, strerror(errno));
       return -1;
     }
     text_vector = std::vector<char>((std::istreambuf_iterator<char>(f)),
                                     std::istreambuf_iterator<char>());
+    text_vector.push_back(0);
     text = &text_vector[0];
   }
   try {
     self->base.base.underlying_obj = new rapidxml::xml_document<>();
-    ((rapidxml::xml_document<>*)self->base.base.underlying_obj)->parse<rapidxml::parse_no_utf8>(self->base.base.memory_pool.allocate_string(text));
+    self->base.base.document = (rapidxml::xml_document<>*)self->base.base.underlying_obj;
+    (self->base.base.document
+     ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
+      (self->base.base.document->allocate_string(text));
   } catch (rapidxml::parse_error &e) {
-    PyErr_SetString(RapidXmlError, e.what());
+    PyErr_SetString(rapidxml_RapidXmlError, e.what());
     return -1;
   }
   return 0;
