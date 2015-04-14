@@ -52,8 +52,8 @@ PyMODINIT_FUNC initrapidxml(void)
   rapidxml_AttributeType.tp_base = &rapidxml_BaseType;
   if (PyType_Ready(&rapidxml_AttributeType) < 0)
     INITERROR;
-  rapidxml_RapidXmlType.tp_base = &rapidxml_NodeType;
-  if (PyType_Ready(&rapidxml_RapidXmlType) < 0)
+  rapidxml_DocumentType.tp_base = &rapidxml_NodeType;
+  if (PyType_Ready(&rapidxml_DocumentType) < 0)
     INITERROR;
 
   if (PyType_Ready(&rapidxml_NodeIteratorType) < 0)
@@ -84,10 +84,10 @@ PyMODINIT_FUNC initrapidxml(void)
                      "Attribute",
                      reinterpret_cast<PyObject *>(&rapidxml_AttributeType));
 
-  Py_INCREF(&rapidxml_RapidXmlType);
+  Py_INCREF(&rapidxml_DocumentType);
   PyModule_AddObject(module,
-                     "RapidXml",
-                     reinterpret_cast<PyObject *>(&rapidxml_RapidXmlType));
+                     "Document",
+                     reinterpret_cast<PyObject *>(&rapidxml_DocumentType));
 
   Py_INCREF(&rapidxml_NodeIteratorType);
   PyModule_AddObject(module,

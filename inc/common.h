@@ -36,7 +36,7 @@ typedef struct {
 
 typedef struct {
   rapidxml_NodeObject base;
-} rapidxml_RapidXmlObject;
+} rapidxml_DocumentObject;
 
 /*
 ** Iterators definitions
@@ -55,7 +55,7 @@ typedef struct {
 extern PyTypeObject rapidxml_BaseType;
 extern PyTypeObject rapidxml_NodeType;
 extern PyTypeObject rapidxml_AttributeType;
-extern PyTypeObject rapidxml_RapidXmlType;
+extern PyTypeObject rapidxml_DocumentType;
 
 extern PyTypeObject rapidxml_NodeIteratorType;
 

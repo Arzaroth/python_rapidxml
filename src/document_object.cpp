@@ -1,7 +1,7 @@
 /*
 ** -*- coding: utf-8 -*-
 **
-** File: rapidxml_object.cpp
+** File: document_object.cpp
 ** by Arzaroth Lekva
 ** arzaroth@arzaroth.com
 **
@@ -18,12 +18,12 @@
 
 #include <common.h>
 
-static void rapidxml_RapidXmlObject_dealloc(rapidxml_RapidXmlObject* self) {
+static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
   delete self->base.base.underlying_obj;
   Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
+static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* args,
                                         PyObject* kwds) {
   const char* text;
@@ -69,7 +69,7 @@ static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
   return 0;
 }
 
-static PyObject* rapidxml_RapidXmlObject_allocate_node(rapidxml_RapidXmlObject* self,
+static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* self,
                                                        PyObject* args,
                                                        PyObject* kwds) {
   const char* name = NULL;
@@ -89,7 +89,7 @@ static PyObject* rapidxml_RapidXmlObject_allocate_node(rapidxml_RapidXmlObject* 
                       node, &rapidxml_NodeType);
 }
 
-static PyObject* rapidxml_RapidXmlObject_allocate_attribute(rapidxml_RapidXmlObject* self,
+static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObject* self,
                                                             PyObject* args,
                                                             PyObject* kwds) {
   const char* name = NULL;
@@ -109,24 +109,24 @@ static PyObject* rapidxml_RapidXmlObject_allocate_attribute(rapidxml_RapidXmlObj
                       attribute, &rapidxml_AttributeType);
 }
 
-static PyMemberDef rapidxml_RapidXmlObject_members[] = {
+static PyMemberDef rapidxml_DocumentObject_members[] = {
   {NULL}
 };
 
-static PyMethodDef rapidxml_RapidXmlObject_methods[] = {
-  {"allocate_node", reinterpret_cast<PyCFunction>(rapidxml_RapidXmlObject_allocate_node),
+static PyMethodDef rapidxml_DocumentObject_methods[] = {
+  {"allocate_node", reinterpret_cast<PyCFunction>(rapidxml_DocumentObject_allocate_node),
    METH_VARARGS | METH_KEYWORDS, "allocates a new node from the pool, and optionally assigns name and value to it"},
-  {"allocate_attribute", reinterpret_cast<PyCFunction>(rapidxml_RapidXmlObject_allocate_attribute),
+  {"allocate_attribute", reinterpret_cast<PyCFunction>(rapidxml_DocumentObject_allocate_attribute),
    METH_VARARGS | METH_KEYWORDS, "allocates a new attribute from the pool, and optionally assigns name and value to it"},
   {NULL}
 };
 
-PyTypeObject rapidxml_RapidXmlType = {
+PyTypeObject rapidxml_DocumentType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "rapidxml.RapidXml",             /* tp_name */
-  sizeof(rapidxml_RapidXmlObject), /* tp_basicsize */
+  "rapidxml.Document",             /* tp_name */
+  sizeof(rapidxml_DocumentObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
-  reinterpret_cast<destructor>(rapidxml_RapidXmlObject_dealloc), /* tp_dealloc */
+  reinterpret_cast<destructor>(rapidxml_DocumentObject_dealloc), /* tp_dealloc */
   0,                               /* tp_print */
   0,                               /* tp_getattr */
   0,                               /* tp_setattr */
@@ -149,15 +149,15 @@ PyTypeObject rapidxml_RapidXmlType = {
   0,                               /* tp_weaklistoffset */
   0,                               /* tp_iter */
   0,                               /* tp_iternext */
-  rapidxml_RapidXmlObject_methods, /* tp_methods */
-  rapidxml_RapidXmlObject_members, /* tp_members */
+  rapidxml_DocumentObject_methods, /* tp_methods */
+  rapidxml_DocumentObject_members, /* tp_members */
   0,                               /* tp_getset */
   0,                               /* tp_base */
   0,                               /* tp_dict */
   0,                               /* tp_descr_get */
   0,                               /* tp_descr_set */
   0,                               /* tp_dictoffset */
-  reinterpret_cast<initproc>(rapidxml_RapidXmlObject_init), /* tp_init */
+  reinterpret_cast<initproc>(rapidxml_DocumentObject_init), /* tp_init */
   0,                               /* tp_alloc */
   0,                               /* tp_new */
   0,                               /* tp_free */
