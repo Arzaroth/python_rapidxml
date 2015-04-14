@@ -12,6 +12,14 @@
 
 # include <rapidxml.hpp>
 
+# if PY_MAJOR_VERSION >= 3
+#  define Py_TPFLAGS_HAVE_ITER 0
+# endif
+
+/*
+** Objects definitions
+*/
+
 typedef struct {
   PyObject_HEAD
   rapidxml::xml_base<>* underlying_obj;
@@ -30,12 +38,36 @@ typedef struct {
   rapidxml_NodeObject base;
 } rapidxml_RapidXmlObject;
 
+/*
+** Iterators definitions
+*/
+
+typedef struct {
+  PyObject_HEAD
+  PyObject* parent;
+  rapidxml::xml_node<>* node;
+} rapidxml_NodeIteratorObject;
+
+/*
+** Types
+*/
+
 extern PyTypeObject rapidxml_BaseType;
 extern PyTypeObject rapidxml_NodeType;
 extern PyTypeObject rapidxml_AttributeType;
 extern PyTypeObject rapidxml_RapidXmlType;
 
+extern PyTypeObject rapidxml_NodeIteratorType;
+
+/*
+** Exceptions
+*/
+
 extern PyObject* rapidxml_RapidXmlError;
+
+/*
+** Utility functions
+*/
 
 int _parse_args_for_name(PyObject*, PyObject*, const char**);
 PyObject* _bind_result(rapidxml_BaseObject*, rapidxml::xml_base<>*, PyTypeObject*);
