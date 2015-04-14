@@ -12,9 +12,9 @@
 
 #include <common.h>
 
-PyObject* EXCEPT_NAME;
+PyObject* RapidXmlError;
 
-static PyMethodDef MODULE_METHS[] = {
+static PyMethodDef module_methods[] = {
   {NULL}
 };
 
@@ -22,10 +22,10 @@ static PyMethodDef MODULE_METHS[] = {
 
 static struct PyModuleDef moduledef = {
   PyModuleDef_HEAD_INIT,
-  STRINGIFY(MODULE_NAME),
-  MODULE_DESC,
+  "rapidxml",
+  "python module for rapidxml bindings",
   -1,
-  MODULE_METHS,
+  module_methods,
   NULL,
   NULL,
   NULL,
@@ -34,41 +34,49 @@ static struct PyModuleDef moduledef = {
 
 # define INITERROR return NULL
 
-PyMODINIT_FUNC CAT(PyInit_, MODULE_NAME)(void)
+PyMODINIT_FUNC PyInit_rapidxml(void)
 
 #else
 # define INITERROR return
 
-PyMODINIT_FUNC CAT(init, MODULE_NAME)(void)
+PyMODINIT_FUNC initrapidxml(void)
 #endif
 {
   PyObject* module;
 
-  OBJ_TYPE.tp_new = PyType_GenericNew;
-  if (PyType_Ready(&OBJ_TYPE) < 0)
+  if (PyType_Ready(&rapidxml_BaseType) < 0)
+    INITERROR;
+  rapidxml_RapidXmlType.tp_base = &rapidxml_BaseType;
+  if (PyType_Ready(&rapidxml_RapidXmlType) < 0)
     INITERROR;
 
 #if PY_MAJOR_VERSION >= 3
   module = PyModule_Create(&moduledef);
 #else
-  module = Py_InitModule3(STRINGIFY(MODULE_NAME),
-                          MODULE_METHS,
-                          MODULE_DESC);
+  module = Py_InitModule3("rapidxml",
+                          module_methods,
+                          "rapidxml module for rapidxml bindings");
 #endif
   if (module == NULL)
     INITERROR;
 
-  Py_INCREF(&OBJ_TYPE);
+  Py_INCREF(&rapidxml_BaseType);
   PyModule_AddObject(module,
-                     STRINGIFY(OBJECT_NAME),
-                     (PyObject *)&OBJ_TYPE);
+                     "Base",
+                     (PyObject *)&rapidxml_BaseType);
+  Py_INCREF(&rapidxml_RapidXmlType);
 
-  EXCEPT_NAME = PyErr_NewException(STRINGIFY(MODULE_NAME) "." STRINGIFY(EXCEPT_NAME),
-                                   NULL, NULL);
-  Py_INCREF(EXCEPT_NAME);
   PyModule_AddObject(module,
-                     STRINGIFY(EXCEPT_NAME),
-                     EXCEPT_NAME);
+                     "RapidXml",
+                     (PyObject *)&rapidxml_RapidXmlType);
+
+  RapidXmlError = PyErr_NewException("rapidxml.RapidXmlError",
+                                     NULL, NULL);
+  Py_INCREF(RapidXmlError);
+  PyModule_AddObject(module,
+                     "RapidXmlError",
+                     RapidXmlError);
+
 #if PY_MAJOR_VERSION >= 3
   return module;
 #endif
