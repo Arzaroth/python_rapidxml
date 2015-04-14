@@ -7,27 +7,25 @@
 **
 */
 
-#ifndef         COMMON_H_
-# define        COMMON_H_
+#ifndef COMMON_H_
+# define COMMON_H_
 
-# define        STR(x) #x
-# define        STRINGIFY(x) STR(x)
-# define        CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
-# define        PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
+# include <rapidxml.hpp>
+# include <vector>
 
-# define        MODULE_DESC "rapidxml module for rapidxml bindings"
-# define        MODULE_NAME rapidxml
-# define        MODULE_METHS CAT(MODULE_NAME, _methods)
+typedef struct {
+  PyObject_HEAD
+  rapidxml::xml_base<>* underlying_obj;
+} rapidxml_BaseObject;
 
-# define        OBJECT_NAME RapidXml
-# define        OBJ_TYPE CAT(MODULE_NAME, CAT(_, CAT(OBJECT_NAME, Type)))
-# define        OBJ_OBJECT CAT(MODULE_NAME, CAT(_, CAT(OBJECT_NAME, Object)))
-# define        OBJ_METHS CAT(OBJECT_NAME, _methods)
-# define        OBJ_MEMBERS CAT(OBJECT_NAME, _members)
+typedef struct {
+  rapidxml_BaseObject base;
+  std::vector<char> text;
+} rapidxml_RapidXmlObject;
 
-# define        EXCEPT_NAME CAT(OBJECT_NAME, Error)
+extern PyTypeObject rapidxml_BaseType;
+extern PyTypeObject rapidxml_RapidXmlType;
 
-extern PyTypeObject OBJ_TYPE;
-extern PyObject* EXCEPT_NAME;
+extern PyObject* RapidXmlError;
 
-#endif          /* !COMMON_H_ */
+#endif /* !COMMON_H_ */
