@@ -19,7 +19,7 @@
 #include <common.h>
 
 static void rapidxml_RapidXmlObject_dealloc(rapidxml_RapidXmlObject* self) {
-  free(self->base.base.underlying_obj);
+  delete self->base.base.underlying_obj;
   Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -69,11 +69,55 @@ static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
   return 0;
 }
 
+static PyObject* rapidxml_RapidXmlObject_allocate_node(rapidxml_RapidXmlObject* self,
+                                                       PyObject* args,
+                                                       PyObject* kwds) {
+  const char* name = NULL;
+  const char* value = NULL;
+  char kw_name[] = "name";
+  char kw_value[] = "value";
+  rapidxml::xml_node<>* node;
+
+  static char* kwlist[] = {kw_name, kw_value, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ss", kwlist,
+                                   &name, &value)) {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  node = self->base.base.document->allocate_node(rapidxml::node_element, name, value);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
+}
+
+static PyObject* rapidxml_RapidXmlObject_allocate_attribute(rapidxml_RapidXmlObject* self,
+                                                            PyObject* args,
+                                                            PyObject* kwds) {
+  const char* name = NULL;
+  const char* value = NULL;
+  char kw_name[] = "name";
+  char kw_value[] = "value";
+  rapidxml::xml_attribute<>* attribute;
+
+  static char* kwlist[] = {kw_name, kw_value, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ss", kwlist,
+                                   &name, &value)) {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  attribute = self->base.base.document->allocate_attribute(name, value);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      attribute, &rapidxml_AttributeType);
+}
+
 static PyMemberDef rapidxml_RapidXmlObject_members[] = {
   {NULL}
 };
 
 static PyMethodDef rapidxml_RapidXmlObject_methods[] = {
+  {"allocate_node", reinterpret_cast<PyCFunction>(rapidxml_RapidXmlObject_allocate_node),
+   METH_VARARGS | METH_KEYWORDS, "allocates a new node from the pool, and optionally assigns name and value to it"},
+  {"allocate_attribute", reinterpret_cast<PyCFunction>(rapidxml_RapidXmlObject_allocate_attribute),
+   METH_VARARGS | METH_KEYWORDS, "allocates a new attribute from the pool, and optionally assigns name and value to it"},
   {NULL}
 };
 
