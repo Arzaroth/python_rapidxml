@@ -13,6 +13,7 @@ rapidxml = Extension("rapidxml",
                                     ('MINOR_VERSION', '0')],
                      include_dirs=['./rapidxml-1.13/', './inc/'],
                      sources=[
+                         "./src/common.cpp",
                          "./src/rapidxml_module.cpp",
                          "./src/base_object.cpp",
                          "./src/node_object.cpp",

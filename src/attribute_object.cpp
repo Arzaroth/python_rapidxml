@@ -20,31 +20,6 @@ static int rapidxml_AttributeObject_init(rapidxml_AttributeObject* self,
   return rapidxml_BaseType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds);
 }
 
-static int _parse_args_for_name(PyObject* args,
-                                PyObject* kwds,
-                                const char** name) {
-  char kw_name[] = "name";
-
-  static char* kwlist[] = {kw_name, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist,
-                                   name)) {
-    return false;
-  }
-  return true;
-}
-
-static PyObject* _bind_result(rapidxml_AttributeObject* self,
-                              rapidxml::xml_attribute<>* attribute) {
-  rapidxml_AttributeObject* new_attribute;
-
-  new_attribute = reinterpret_cast<rapidxml_AttributeObject*>
-    (PyObject_CallObject(reinterpret_cast<PyObject*>(&rapidxml_AttributeType),
-                         NULL));
-  new_attribute->base.underlying_obj = attribute;
-  new_attribute->base.document = self->base.document;
-  return reinterpret_cast<PyObject*>(new_attribute);
-}
-
 static PyObject* rapidxml_AttributeObject_previous_attribute(rapidxml_AttributeObject* self,
                                                              PyObject* args,
                                                              PyObject* kwds) {
@@ -58,7 +33,8 @@ static PyObject* rapidxml_AttributeObject_previous_attribute(rapidxml_AttributeO
   if (attribute == NULL) {
     goto err;
   }
-  return _bind_result(self, attribute);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      attribute, &rapidxml_AttributeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
@@ -77,7 +53,8 @@ static PyObject* rapidxml_AttributeObject_next_attribute(rapidxml_AttributeObjec
   if (attribute == NULL) {
     goto err;
   }
-  return _bind_result(self, attribute);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      attribute, &rapidxml_AttributeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
