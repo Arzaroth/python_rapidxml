@@ -15,6 +15,7 @@ rapidxml = Extension("rapidxml",
                      sources=[
                          "./src/rapidxml_module.cpp",
                          "./src/base_object.cpp",
+                         "./src/node_object.cpp",
                          "./src/rapidxml_object.cpp",
                      ],
 )

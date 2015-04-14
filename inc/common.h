@@ -11,19 +11,23 @@
 # define COMMON_H_
 
 # include <rapidxml.hpp>
-# include <vector>
 
 typedef struct {
   PyObject_HEAD
   rapidxml::xml_base<>* underlying_obj;
+  rapidxml::memory_pool<> memory_pool;
 } rapidxml_BaseObject;
 
 typedef struct {
   rapidxml_BaseObject base;
-  std::vector<char> text;
+} rapidxml_NodeObject;
+
+typedef struct {
+  rapidxml_NodeObject base;
 } rapidxml_RapidXmlObject;
 
 extern PyTypeObject rapidxml_BaseType;
+extern PyTypeObject rapidxml_NodeType;
 extern PyTypeObject rapidxml_RapidXmlType;
 
 extern PyObject* RapidXmlError;
