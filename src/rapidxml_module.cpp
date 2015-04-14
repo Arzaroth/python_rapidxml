@@ -46,7 +46,10 @@ PyMODINIT_FUNC initrapidxml(void)
 
   if (PyType_Ready(&rapidxml_BaseType) < 0)
     INITERROR;
-  rapidxml_RapidXmlType.tp_base = &rapidxml_BaseType;
+  rapidxml_NodeType.tp_base = &rapidxml_BaseType;
+  if (PyType_Ready(&rapidxml_NodeType) < 0)
+    INITERROR;
+  rapidxml_RapidXmlType.tp_base = &rapidxml_NodeType;
   if (PyType_Ready(&rapidxml_RapidXmlType) < 0)
     INITERROR;
 
@@ -64,8 +67,13 @@ PyMODINIT_FUNC initrapidxml(void)
   PyModule_AddObject(module,
                      "Base",
                      (PyObject *)&rapidxml_BaseType);
-  Py_INCREF(&rapidxml_RapidXmlType);
 
+  Py_INCREF(&rapidxml_NodeType);
+  PyModule_AddObject(module,
+                     "Node",
+                     (PyObject *)&rapidxml_NodeType);
+
+  Py_INCREF(&rapidxml_RapidXmlType);
   PyModule_AddObject(module,
                      "RapidXml",
                      (PyObject *)&rapidxml_RapidXmlType);

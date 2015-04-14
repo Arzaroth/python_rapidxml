@@ -14,11 +14,7 @@
 #include <common.h>
 
 static void rapidxml_BaseObject_dealloc(rapidxml_BaseObject* self) {
-#if PY_MAJOR_VERSION >= 3
   Py_TYPE(self)->tp_free((PyObject*)self);
-#else
-  self->ob_type->tp_free((PyObject*)self);
-#endif
 }
 
 static PyObject* rapidxml_BaseObject_new(PyTypeObject* type,
@@ -69,7 +65,7 @@ static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
   if (!PyArg_Parse(arg, "s", &name)) {
     return -1;
   }
-  self->underlying_obj->name(name);
+  self->underlying_obj->name(self->memory_pool.allocate_string(name));
   return 0;
 }
 
@@ -103,7 +99,7 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
   if (!PyArg_Parse(arg, "s", &value)) {
     return -1;
   }
-  self->underlying_obj->value(value);
+  self->underlying_obj->value(self->memory_pool.allocate_string(value));
   return 0;
 }
 
@@ -126,12 +122,7 @@ static PyMethodDef rapidxml_BaseObject_methods[] = {
 };
 
 PyTypeObject rapidxml_BaseType = {
-  #if PY_MAJOR_VERSION >= 3
   PyVarObject_HEAD_INIT(NULL, 0)
-  #else
-  PyObject_HEAD_INIT(NULL)
-  0,                               /* ob_size */
-  #endif
   "rapidxml.Base",                 /* tp_name */
   sizeof(rapidxml_BaseObject),     /* tp_basicsize */
   0,                               /* tp_itemsize */
@@ -150,8 +141,8 @@ PyTypeObject rapidxml_BaseType = {
   0,                               /* tp_getattro */
   0,                               /* tp_setattro */
   0,                               /* tp_as_buffer */
-  Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  "rapidxml base object",          /* tp_doc */
+  Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+  "class representing a rapidxml::xml_base", /* tp_doc */
   0,                               /* tp_traverse */
   0,                               /* tp_clear */
   0,                               /* tp_richcompare */
