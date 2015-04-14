@@ -23,11 +23,16 @@ typedef struct {
 } rapidxml_NodeObject;
 
 typedef struct {
+  rapidxml_BaseObject base;
+} rapidxml_AttributeObject;
+
+typedef struct {
   rapidxml_NodeObject base;
 } rapidxml_RapidXmlObject;
 
 extern PyTypeObject rapidxml_BaseType;
 extern PyTypeObject rapidxml_NodeType;
+extern PyTypeObject rapidxml_AttributeType;
 extern PyTypeObject rapidxml_RapidXmlType;
 
 extern PyObject* rapidxml_RapidXmlError;
