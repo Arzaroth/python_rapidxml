@@ -25,6 +25,7 @@ static PyObject* rapidxml_BaseObject_new(PyTypeObject* type,
   self = (rapidxml_BaseObject*)type->tp_alloc(type, 0);
   if (self != NULL) {
     self->underlying_obj = NULL;
+    self->document = NULL;
   }
   return (PyObject*)self;
 }
@@ -48,7 +49,14 @@ static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
                                        void* closure) {
   const char* name;
 
-  if (self->underlying_obj == NULL || arg == NULL) {
+  if (self->underlying_obj == NULL || self->document == NULL) {
+    PyErr_SetString(rapidxml_RapidXmlError,
+                    "underlying mechanism failed");
+    return -1;
+  }
+  if (arg == NULL) {
+    PyErr_SetString(PyExc_TypeError,
+                    "name attribute must not be null");
     return -1;
   }
   if (!
@@ -65,7 +73,7 @@ static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
   if (!PyArg_Parse(arg, "s", &name)) {
     return -1;
   }
-  self->underlying_obj->name(self->memory_pool.allocate_string(name));
+  self->underlying_obj->name(self->document->allocate_string(name));
   return 0;
 }
 
@@ -82,7 +90,14 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
                                         void* closure) {
   const char* value;
 
-  if (self->underlying_obj == NULL || arg == NULL) {
+  if (self->underlying_obj == NULL || self->document == NULL) {
+    PyErr_SetString(rapidxml_RapidXmlError,
+                    "underlying mechanism failed");
+    return -1;
+  }
+  if (arg == NULL) {
+    PyErr_SetString(PyExc_TypeError,
+                    "value attribute must not be null");
     return -1;
   }
   if (!
@@ -99,7 +114,7 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
   if (!PyArg_Parse(arg, "s", &value)) {
     return -1;
   }
-  self->underlying_obj->value(self->memory_pool.allocate_string(value));
+  self->underlying_obj->value(self->document->allocate_string(value));
   return 0;
 }
 

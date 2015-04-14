@@ -12,7 +12,7 @@
 
 #include <common.h>
 
-PyObject* RapidXmlError;
+PyObject* rapidxml_RapidXmlError;
 
 static PyMethodDef module_methods[] = {
   {NULL}
@@ -78,12 +78,12 @@ PyMODINIT_FUNC initrapidxml(void)
                      "RapidXml",
                      (PyObject *)&rapidxml_RapidXmlType);
 
-  RapidXmlError = PyErr_NewException("rapidxml.RapidXmlError",
+  rapidxml_RapidXmlError = PyErr_NewException("rapidxml.rapidxml_RapidXmlError",
                                      NULL, NULL);
-  Py_INCREF(RapidXmlError);
+  Py_INCREF(rapidxml_RapidXmlError);
   PyModule_AddObject(module,
-                     "RapidXmlError",
-                     RapidXmlError);
+                     "rapidxml_RapidXmlError",
+                     rapidxml_RapidXmlError);
 
 #if PY_MAJOR_VERSION >= 3
   return module;

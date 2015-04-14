@@ -42,6 +42,7 @@ static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
   new_node = (rapidxml_NodeObject*)PyObject_CallObject((PyObject*)&rapidxml_NodeType,
                                                        NULL);
   new_node->base.underlying_obj = node;
+  new_node->base.document = self->base.document;
   return (PyObject*)new_node;
 }
 
@@ -60,7 +61,7 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
     pretty = PyObject_IsTrue(pretty_obj);
   }
   rapidxml::print(std::back_inserter(xml),
-                  *((rapidxml::xml_document<>*)self->base.underlying_obj),
+                  *((rapidxml::xml_node<>*)self->base.underlying_obj),
                   !pretty ? rapidxml::print_no_indenting : 0);
   return Py_BuildValue("s", xml.c_str());
 }
