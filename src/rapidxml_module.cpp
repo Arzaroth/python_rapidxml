@@ -58,6 +58,8 @@ PyMODINIT_FUNC initrapidxml(void)
 
   if (PyType_Ready(&rapidxml_NodeIteratorType) < 0)
     INITERROR;
+  if (PyType_Ready(&rapidxml_AttributeIteratorType) < 0)
+    INITERROR;
 
 #if PY_MAJOR_VERSION >= 3
   module = PyModule_Create(&moduledef);
@@ -93,6 +95,11 @@ PyMODINIT_FUNC initrapidxml(void)
   PyModule_AddObject(module,
                      "NodeIterator",
                      reinterpret_cast<PyObject *>(&rapidxml_NodeIteratorType));
+
+  Py_INCREF(&rapidxml_AttributeIteratorType);
+  PyModule_AddObject(module,
+                     "AttributeIterator",
+                     reinterpret_cast<PyObject *>(&rapidxml_AttributeIteratorType));
 
   rapidxml_RapidXmlError = PyErr_NewException("rapidxml.rapidxml_RapidXmlError",
                                      NULL, NULL);
