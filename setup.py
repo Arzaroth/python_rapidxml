@@ -20,6 +20,7 @@ rapidxml = Extension("rapidxml",
                          "./src/attribute_object.cpp",
                          "./src/document_object.cpp",
                          "./src/nodeiterator_object.cpp",
+                         "./src/attributeiterator_object.cpp",
                      ],
 )
 

@@ -194,10 +194,26 @@ static PyObject* rapidxml_NodeObject_children(rapidxml_NodeObject* self,
   return reinterpret_cast<PyObject*>(iterator);
 }
 
+static PyObject* rapidxml_NodeObject_attributes(rapidxml_NodeObject* self,
+                                                void* closure) {
+  rapidxml_AttributeIteratorObject* iterator;
+  PyObject* args;
+
+  args = Py_BuildValue("(O)", self);
+  iterator = reinterpret_cast<rapidxml_AttributeIteratorObject*>
+    (PyObject_CallObject(reinterpret_cast<PyObject*>(&rapidxml_AttributeIteratorType),
+                         args));
+  Py_DECREF(args);
+  return reinterpret_cast<PyObject*>(iterator);
+}
+
 static PyGetSetDef rapidxml_NodeObject_getseters[] = {
   {"children",
    (getter)rapidxml_NodeObject_children, NULL,
    "return an NodeIteratorObject to iterate over a node's children"},
+  {"attributes",
+   (getter)rapidxml_NodeObject_attributes, NULL,
+   "return an AttributeIteratorObject to iterate over a node's attributes"},
   {NULL}
 };
 

@@ -48,6 +48,12 @@ typedef struct {
   rapidxml::xml_node<>* node;
 } rapidxml_NodeIteratorObject;
 
+typedef struct {
+  PyObject_HEAD
+  PyObject* parent;
+  rapidxml::xml_attribute<>* attribute;
+} rapidxml_AttributeIteratorObject;
+
 /*
 ** Types
 */
@@ -58,6 +64,7 @@ extern PyTypeObject rapidxml_AttributeType;
 extern PyTypeObject rapidxml_DocumentType;
 
 extern PyTypeObject rapidxml_NodeIteratorType;
+extern PyTypeObject rapidxml_AttributeIteratorType;
 
 /*
 ** Exceptions
