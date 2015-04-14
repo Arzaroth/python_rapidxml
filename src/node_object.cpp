@@ -84,6 +84,44 @@ static PyObject* rapidxml_NodeObject_last_node(rapidxml_NodeObject* self,
   return Py_None;
 }
 
+static PyObject* rapidxml_NodeObject_previous_sibling(rapidxml_NodeObject* self,
+                                                      PyObject* args,
+                                                      PyObject* kwds) {
+  const char* name = NULL;
+  rapidxml::xml_node<>* node;
+
+  if (!_parse_args_for_name(args, kwds, &name)) {
+    goto err;
+  }
+  node = static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->previous_sibling(name);
+  if (node == NULL) {
+    goto err;
+  }
+  return _bind_result(self, node);
+ err:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_next_sibling(rapidxml_NodeObject* self,
+                                                  PyObject* args,
+                                                  PyObject* kwds) {
+  const char* name = NULL;
+  rapidxml::xml_node<>* node;
+
+  if (!_parse_args_for_name(args, kwds, &name)) {
+    goto err;
+  }
+  node = static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->next_sibling(name);
+  if (node == NULL) {
+    goto err;
+  }
+  return _bind_result(self, node);
+ err:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                                              PyObject* args,
                                              PyObject* kwds) {
@@ -133,6 +171,10 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
    METH_VARARGS | METH_KEYWORDS, "gets first child node, optionally matching node name"},
   {"last_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_last_node),
    METH_VARARGS | METH_KEYWORDS, "gets last child node, optionally matching node name"},
+  {"previous_sibling", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_previous_sibling),
+   METH_VARARGS | METH_KEYWORDS, "gets previous sibling node, optionally matching node name"},
+  {"next_sibling", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_next_sibling),
+   METH_VARARGS | METH_KEYWORDS, "gets next sibling node, optionally matching node name"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
