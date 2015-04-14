@@ -36,6 +36,30 @@ static int rapidxml_BaseObject_init(rapidxml_BaseObject* self,
   return 0;
 }
 
+static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
+                                             PyObject* obj2,
+                                             int op) {
+  PyObject* res;
+  bool c;
+
+  if (!(IS_BASE(obj1) && IS_BASE(obj2))) {
+    PyErr_SetString(PyExc_TypeError, "Excepted instances of rapidxml.Base");
+    return NULL;
+  }
+  switch (op) {
+  case Py_EQ:
+    c = (reinterpret_cast<rapidxml_BaseObject*>(obj1)->underlying_obj ==
+         reinterpret_cast<rapidxml_BaseObject*>(obj2)->underlying_obj);
+    break;
+  default:
+    PyErr_SetNone(PyExc_NotImplementedError);
+    return NULL;
+  }
+  res = c ? Py_True : Py_False;
+  Py_INCREF(res);
+  return res;
+}
+
 static PyObject* rapidxml_BaseObject_getname(rapidxml_BaseObject* self,
                                              void* closure) {
   if (self->underlying_obj == NULL) {
@@ -160,7 +184,7 @@ PyTypeObject rapidxml_BaseType = {
   "class representing a rapidxml::xml_base", /* tp_doc */
   0,                               /* tp_traverse */
   0,                               /* tp_clear */
-  0,                               /* tp_richcompare */
+  reinterpret_cast<richcmpfunc>(rapidxml_BaseObject_richcmp), /* tp_richcompare */
   0,                               /* tp_weaklistoffset */
   0,                               /* tp_iter */
   0,                               /* tp_iternext */
