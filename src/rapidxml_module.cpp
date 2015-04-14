@@ -66,17 +66,17 @@ PyMODINIT_FUNC initrapidxml(void)
   Py_INCREF(&rapidxml_BaseType);
   PyModule_AddObject(module,
                      "Base",
-                     (PyObject *)&rapidxml_BaseType);
+                     reinterpret_cast<PyObject *>(&rapidxml_BaseType));
 
   Py_INCREF(&rapidxml_NodeType);
   PyModule_AddObject(module,
                      "Node",
-                     (PyObject *)&rapidxml_NodeType);
+                     reinterpret_cast<PyObject *>(&rapidxml_NodeType));
 
   Py_INCREF(&rapidxml_RapidXmlType);
   PyModule_AddObject(module,
                      "RapidXml",
-                     (PyObject *)&rapidxml_RapidXmlType);
+                     reinterpret_cast<PyObject *>(&rapidxml_RapidXmlType));
 
   rapidxml_RapidXmlError = PyErr_NewException("rapidxml.rapidxml_RapidXmlError",
                                      NULL, NULL);
