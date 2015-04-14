@@ -18,7 +18,7 @@
 static int rapidxml_NodeObject_init(rapidxml_NodeObject* self,
                                     PyObject* args,
                                     PyObject* kwds) {
-  return 0;
+  return rapidxml_BaseType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds);
 }
 
 static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
