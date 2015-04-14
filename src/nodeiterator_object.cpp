@@ -27,15 +27,15 @@ static PyObject* rapidxml_NodeIteratorObject_new(PyTypeObject* type,
   if (self != NULL) {
     self->node = NULL;
     self->parent = NULL;
-    if (!PyArg_ParseTuple(args, "O", &self->parent)) {
-      Py_DECREF(self);
-      return NULL;
-    }
-    if (self->parent != NULL) {
+    if (PyArg_ParseTuple(args, "O", &self->parent) &&
+        self->parent != NULL) {
       Py_INCREF(self->parent);
       self->node = static_cast<rapidxml::xml_node<>*>
         (reinterpret_cast<rapidxml_NodeObject*>(self->parent)
          ->base.underlying_obj)->first_node();
+    } else {
+      Py_DECREF(self);
+      return NULL;
     }
   }
   return reinterpret_cast<PyObject*>(self);
