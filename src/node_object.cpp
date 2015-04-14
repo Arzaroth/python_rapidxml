@@ -21,31 +21,6 @@ static int rapidxml_NodeObject_init(rapidxml_NodeObject* self,
   return rapidxml_BaseType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds);
 }
 
-static int _parse_args_for_name(PyObject* args,
-                                PyObject* kwds,
-                                const char** name) {
-  char kw_name[] = "name";
-
-  static char* kwlist[] = {kw_name, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist,
-                                   name)) {
-    return false;
-  }
-  return true;
-}
-
-static PyObject* _bind_result(rapidxml_NodeObject* self,
-                              rapidxml::xml_node<>* node) {
-  rapidxml_NodeObject* new_node;
-
-  new_node = reinterpret_cast<rapidxml_NodeObject*>
-    (PyObject_CallObject(reinterpret_cast<PyObject*>(&rapidxml_NodeType),
-                         NULL));
-  new_node->base.underlying_obj = node;
-  new_node->base.document = self->base.document;
-  return reinterpret_cast<PyObject*>(new_node);
-}
-
 static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
                                                 PyObject* args,
                                                 PyObject* kwds) {
@@ -59,7 +34,8 @@ static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
   if (node == NULL) {
     goto err;
   }
-  return _bind_result(self, node);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
@@ -78,7 +54,8 @@ static PyObject* rapidxml_NodeObject_last_node(rapidxml_NodeObject* self,
   if (node == NULL) {
     goto err;
   }
-  return _bind_result(self, node);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
@@ -97,7 +74,8 @@ static PyObject* rapidxml_NodeObject_previous_sibling(rapidxml_NodeObject* self,
   if (node == NULL) {
     goto err;
   }
-  return _bind_result(self, node);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
@@ -116,7 +94,48 @@ static PyObject* rapidxml_NodeObject_next_sibling(rapidxml_NodeObject* self,
   if (node == NULL) {
     goto err;
   }
-  return _bind_result(self, node);
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
+ err:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_first_attribute(rapidxml_NodeObject* self,
+                                                     PyObject* args,
+                                                     PyObject* kwds) {
+  const char* name = NULL;
+  rapidxml::xml_attribute<>* attribute;
+
+  if (!_parse_args_for_name(args, kwds, &name)) {
+    goto err;
+  }
+  attribute = static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->first_attribute(name);
+  if (attribute == NULL) {
+    goto err;
+  }
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      attribute, &rapidxml_AttributeType);
+ err:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_last_attribute(rapidxml_NodeObject* self,
+                                                     PyObject* args,
+                                                     PyObject* kwds) {
+  const char* name = NULL;
+  rapidxml::xml_attribute<>* attribute;
+
+  if (!_parse_args_for_name(args, kwds, &name)) {
+    goto err;
+  }
+  attribute = static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->last_attribute(name);
+  if (attribute == NULL) {
+    goto err;
+  }
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      attribute, &rapidxml_AttributeType);
  err:
   Py_INCREF(Py_None);
   return Py_None;
@@ -175,6 +194,10 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
    METH_VARARGS | METH_KEYWORDS, "gets previous sibling node, optionally matching node name"},
   {"next_sibling", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_next_sibling),
    METH_VARARGS | METH_KEYWORDS, "gets next sibling node, optionally matching node name"},
+  {"first_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_first_attribute),
+   METH_VARARGS | METH_KEYWORDS, "gets first attribute of node, optionally matching node name"},
+  {"last_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_last_attribute),
+   METH_VARARGS | METH_KEYWORDS, "gets last attribute of node, optionally matching node name"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}

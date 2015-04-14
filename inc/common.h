@@ -37,4 +37,7 @@ extern PyTypeObject rapidxml_RapidXmlType;
 
 extern PyObject* rapidxml_RapidXmlError;
 
+int _parse_args_for_name(PyObject*, PyObject*, const char**);
+PyObject* _bind_result(rapidxml_BaseObject*, rapidxml::xml_base<>*, PyTypeObject*);
+
 #endif /* !COMMON_H_ */
