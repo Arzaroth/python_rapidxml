@@ -20,7 +20,7 @@
 
 static void rapidxml_RapidXmlObject_dealloc(rapidxml_RapidXmlObject* self) {
   free(self->base.base.underlying_obj);
-  Py_TYPE(self)->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
@@ -33,7 +33,7 @@ static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
   char kw_from_file[] = "from_file";
   std::vector<char> text_vector;
 
-  if (rapidxml_NodeType.tp_init((PyObject*)self, args, kwds) < 0) {
+  if (rapidxml_NodeType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds) < 0) {
     return -1;
   }
   static char* kwlist[] = {kw_text, kw_from_file, NULL};
@@ -58,7 +58,7 @@ static int rapidxml_RapidXmlObject_init(rapidxml_RapidXmlObject* self,
   }
   try {
     self->base.base.underlying_obj = new rapidxml::xml_document<>();
-    self->base.base.document = (rapidxml::xml_document<>*)self->base.base.underlying_obj;
+    self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
     (self->base.base.document
      ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
       (self->base.base.document->allocate_string(text));
@@ -82,7 +82,7 @@ PyTypeObject rapidxml_RapidXmlType = {
   "rapidxml.RapidXml",             /* tp_name */
   sizeof(rapidxml_RapidXmlObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
-  (destructor)rapidxml_RapidXmlObject_dealloc, /* tp_dealloc */
+  reinterpret_cast<destructor>(rapidxml_RapidXmlObject_dealloc), /* tp_dealloc */
   0,                               /* tp_print */
   0,                               /* tp_getattr */
   0,                               /* tp_setattr */
@@ -113,7 +113,7 @@ PyTypeObject rapidxml_RapidXmlType = {
   0,                               /* tp_descr_get */
   0,                               /* tp_descr_set */
   0,                               /* tp_dictoffset */
-  (initproc)rapidxml_RapidXmlObject_init, /* tp_init */
+  reinterpret_cast<initproc>(rapidxml_RapidXmlObject_init), /* tp_init */
   0,                               /* tp_alloc */
   0,                               /* tp_new */
   0,                               /* tp_free */

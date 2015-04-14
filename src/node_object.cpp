@@ -34,16 +34,17 @@ static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
     Py_INCREF(Py_None);
     return Py_None;
   }
-  rapidxml::xml_node<>* node = ((rapidxml::xml_node<>*)self->base.underlying_obj)->first_node(name);
+  rapidxml::xml_node<>* node = static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->first_node(name);
   if (!node) {
     Py_INCREF(Py_None);
     return Py_None;
   }
-  new_node = (rapidxml_NodeObject*)PyObject_CallObject((PyObject*)&rapidxml_NodeType,
-                                                       NULL);
+  new_node = reinterpret_cast<rapidxml_NodeObject*>
+    (PyObject_CallObject(reinterpret_cast<PyObject*>(&rapidxml_NodeType),
+                         NULL));
   new_node->base.underlying_obj = node;
   new_node->base.document = self->base.document;
-  return (PyObject*)new_node;
+  return reinterpret_cast<PyObject*>(new_node);
 }
 
 static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
@@ -61,7 +62,7 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
     pretty = PyObject_IsTrue(pretty_obj);
   }
   rapidxml::print(std::back_inserter(xml),
-                  *((rapidxml::xml_node<>*)self->base.underlying_obj),
+                  *(static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)),
                   !pretty ? rapidxml::print_no_indenting : 0);
   return Py_BuildValue("s", xml.c_str());
 }
@@ -91,9 +92,9 @@ static PyMemberDef rapidxml_NodeObject_members[] = {
 };
 
 static PyMethodDef rapidxml_NodeObject_methods[] = {
-  {"first_node", (PyCFunction)rapidxml_NodeObject_first_node,
+  {"first_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_first_node),
    METH_VARARGS | METH_KEYWORDS, "gets first child node, optionally matching node name"},
-  {"unparse", (PyCFunction)rapidxml_NodeObject_unparse,
+  {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
 };
@@ -108,13 +109,13 @@ PyTypeObject rapidxml_NodeType = {
   0,                               /* tp_getattr */
   0,                               /* tp_setattr */
   0,                               /* tp_reserved */
-  (reprfunc)rapidxml_NodeObject___repr__, /* tp_repr */
+  reinterpret_cast<reprfunc>(rapidxml_NodeObject___repr__), /* tp_repr */
   0,                               /* tp_as_number */
   0,                               /* tp_as_sequence */
   0,                               /* tp_as_mapping */
   0,                               /* tp_hash  */
   0,                               /* tp_call */
-  (reprfunc)rapidxml_NodeObject___str__, /* tp_str */
+  reinterpret_cast<reprfunc>(rapidxml_NodeObject___str__), /* tp_repr */
   0,                               /* tp_getattro */
   0,                               /* tp_setattro */
   0,                               /* tp_as_buffer */
@@ -134,7 +135,7 @@ PyTypeObject rapidxml_NodeType = {
   0,                               /* tp_descr_get */
   0,                               /* tp_descr_set */
   0,                               /* tp_dictoffset */
-  (initproc)rapidxml_NodeObject_init, /* tp_init */
+  reinterpret_cast<initproc>(rapidxml_NodeObject_init), /* tp_init */
   0,                               /* tp_alloc */
   0,                               /* tp_new */
   0,                               /* tp_free */

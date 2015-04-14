@@ -14,7 +14,7 @@
 #include <common.h>
 
 static void rapidxml_BaseObject_dealloc(rapidxml_BaseObject* self) {
-  Py_TYPE(self)->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static PyObject* rapidxml_BaseObject_new(PyTypeObject* type,
@@ -22,12 +22,12 @@ static PyObject* rapidxml_BaseObject_new(PyTypeObject* type,
                                          PyObject* kwds) {
   rapidxml_BaseObject* self;
 
-  self = (rapidxml_BaseObject*)type->tp_alloc(type, 0);
+  self = reinterpret_cast<rapidxml_BaseObject*>(type->tp_alloc(type, 0));
   if (self != NULL) {
     self->underlying_obj = NULL;
     self->document = NULL;
   }
-  return (PyObject*)self;
+  return reinterpret_cast<PyObject*>(self);
 }
 
 static int rapidxml_BaseObject_init(rapidxml_BaseObject* self,
@@ -141,7 +141,7 @@ PyTypeObject rapidxml_BaseType = {
   "rapidxml.Base",                 /* tp_name */
   sizeof(rapidxml_BaseObject),     /* tp_basicsize */
   0,                               /* tp_itemsize */
-  (destructor)rapidxml_BaseObject_dealloc, /* tp_dealloc */
+  reinterpret_cast<destructor>(rapidxml_BaseObject_dealloc), /* tp_dealloc */
   0,                               /* tp_print */
   0,                               /* tp_getattr */
   0,                               /* tp_setattr */
@@ -172,9 +172,9 @@ PyTypeObject rapidxml_BaseType = {
   0,                               /* tp_descr_get */
   0,                               /* tp_descr_set */
   0,                               /* tp_dictoffset */
-  (initproc)rapidxml_BaseObject_init, /* tp_init */
+  reinterpret_cast<initproc>(rapidxml_BaseObject_init), /* tp_init */
   0,                               /* tp_alloc */
-  (newfunc)rapidxml_BaseObject_new, /* tp_new */
+  reinterpret_cast<newfunc>(rapidxml_BaseObject_new), /* tp_new */
   0,                               /* tp_free */
   0,                               /* tp_is_gc */
   0,                               /* tp_bases */
