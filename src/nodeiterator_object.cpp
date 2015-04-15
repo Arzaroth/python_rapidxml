@@ -28,7 +28,7 @@ static PyObject* rapidxml_NodeIteratorObject_new(PyTypeObject* type,
     self->node = NULL;
     self->parent = NULL;
     if (PyArg_ParseTuple(args, "O", &self->parent) &&
-        self->parent != NULL) {
+        self->parent != NULL && IS_NODE(self->parent)) {
       Py_INCREF(self->parent);
       self->node = static_cast<rapidxml::xml_node<>*>
         (reinterpret_cast<rapidxml_NodeObject*>(self->parent)

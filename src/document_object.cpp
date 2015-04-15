@@ -23,23 +23,21 @@ static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
   Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
-                                        PyObject* args,
-                                        PyObject* kwds) {
-  const char* text;
+static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
+                                               PyObject* args,
+                                               PyObject* kwds) {
+  const char* text = NULL;
   int from_file = 0;
   PyObject* from_file_obj = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   std::vector<char> text_vector;
+  PyObject* res;
 
-  if (rapidxml_NodeType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds) < 0) {
-    return -1;
-  }
   static char* kwlist[] = {kw_text, kw_from_file, NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|O", kwlist,
                                    &text, &from_file_obj)) {
-    return -1;
+    goto fail;
   }
   if (from_file_obj) {
     from_file = PyObject_IsTrue(from_file_obj);
@@ -49,7 +47,7 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
     std::ifstream f(text, std::ios::binary);
     if (f.fail()) {
       PyErr_SetString(rapidxml_RapidXmlError, strerror(errno));
-      return -1;
+      goto fail;
     }
     text_vector = std::vector<char>((std::istreambuf_iterator<char>(f)),
                                     std::istreambuf_iterator<char>());
@@ -57,14 +55,43 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
     text = &text_vector[0];
   }
   try {
-    self->base.base.underlying_obj = new rapidxml::xml_document<>();
-    self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
+    self->base.base.document->clear();
     (self->base.base.document
      ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
       (self->base.base.document->allocate_string(text));
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(rapidxml_RapidXmlError, e.what());
+    goto fail;
+  }
+  res = Py_True;
+  goto end;
+ fail:
+  res = Py_False;
+ end:
+  Py_INCREF(res);
+  return res;
+}
+
+static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
+                                        PyObject* args,
+                                        PyObject* kwds) {
+  const char* text = NULL;
+  PyObject* from_file_obj = NULL;
+  char kw_text[] = "text";
+  char kw_from_file[] = "from_file";
+
+  if (rapidxml_NodeType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds) < 0) {
     return -1;
+  }
+  static char* kwlist[] = {kw_text, kw_from_file, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sO", kwlist,
+                                   &text, &from_file_obj)) {
+    return -1;
+  }
+  self->base.base.underlying_obj = new rapidxml::xml_document<>();
+  self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
+  if (text) {
+    rapidxml_DocumentObject_parse(self, args, kwds);
   }
   return 0;
 }
@@ -114,6 +141,8 @@ static PyMemberDef rapidxml_DocumentObject_members[] = {
 };
 
 static PyMethodDef rapidxml_DocumentObject_methods[] = {
+  {"parse", reinterpret_cast<PyCFunction>(rapidxml_DocumentObject_parse),
+   METH_VARARGS | METH_KEYWORDS, "parse given xml string, optionally from a file a from_file argument is True"},
   {"allocate_node", reinterpret_cast<PyCFunction>(rapidxml_DocumentObject_allocate_node),
    METH_VARARGS | METH_KEYWORDS, "allocates a new node from the pool, and optionally assigns name and value to it"},
   {"allocate_attribute", reinterpret_cast<PyCFunction>(rapidxml_DocumentObject_allocate_attribute),
