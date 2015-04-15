@@ -43,7 +43,7 @@ static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
   bool c;
 
   if (!(IS_BASE(obj1) && IS_BASE(obj2))) {
-    PyErr_SetString(PyExc_TypeError, "Excepted instances of rapidxml.Base");
+    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml.Base");
     return NULL;
   }
   switch (op) {

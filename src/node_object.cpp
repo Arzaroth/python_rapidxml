@@ -149,14 +149,16 @@ static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
 
   static char* kwlist[] = {kw_node, NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
-                                   &node) ||
-      !IS_NODE(node)) {
-    goto end;
+                                   &node)) {
+    return NULL;
+  }
+  if (!IS_NODE(node)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->prepend_node
     (static_cast<rapidxml::xml_node<>*>
      (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
- end:
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -169,14 +171,88 @@ static PyObject* rapidxml_NodeObject_append_node(rapidxml_NodeObject* self,
 
   static char* kwlist[] = {kw_node, NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
-                                   &node) ||
-      !IS_NODE(node)) {
-    goto end;
+                                   &node)) {
+    return NULL;
+  }
+  if (!IS_NODE(node)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->append_node
     (static_cast<rapidxml::xml_node<>*>
      (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
- end:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_insert_node(rapidxml_NodeObject* self,
+                                                 PyObject* args,
+                                                 PyObject* kwds) {
+  char kw_where[] = "where";
+  char kw_node[] = "node";
+  PyObject* where = NULL;
+  PyObject* node = NULL;
+
+  static char* kwlist[] = {kw_where, kw_node, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "OO", kwlist,
+                                   &where, &node)) {
+    return NULL;
+  }
+  if (!(IS_NODE(where) && IS_NODE(node))) {
+    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml.Node");
+    return NULL;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->insert_node
+    (static_cast<rapidxml::xml_node<>*>
+     (reinterpret_cast<rapidxml_NodeObject*>(where)->base.underlying_obj),
+     static_cast<rapidxml::xml_node<>*>
+     (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_remove_first_node(rapidxml_NodeObject* self,
+                                                       PyObject* args,
+                                                       PyObject* kwds) {
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_first_node();
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_remove_last_node(rapidxml_NodeObject* self,
+                                                      PyObject* args,
+                                                      PyObject* kwds) {
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_last_node();
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_remove_node(rapidxml_NodeObject* self,
+                                                 PyObject* args,
+                                                 PyObject* kwds) {
+  char kw_node[] = "node";
+  PyObject* node = NULL;
+
+  static char* kwlist[] = {kw_node, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &node)) {
+    return NULL;
+  }
+  if (!IS_NODE(node)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    return NULL;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_node
+    (static_cast<rapidxml::xml_node<>*>
+     (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_remove_all_nodes(rapidxml_NodeObject* self,
+                                                      PyObject* args,
+                                                      PyObject* kwds) {
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_all_nodes();
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -278,6 +354,16 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
    METH_VARARGS | METH_KEYWORDS, "prepends a new child node"},
   {"append_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_append_node),
    METH_VARARGS | METH_KEYWORDS, "appends a new child node"},
+  {"insert_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_insert_node),
+   METH_VARARGS | METH_KEYWORDS, "inserts a new child node at specified place"},
+  {"remove_first_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_first_node),
+   METH_VARARGS | METH_KEYWORDS, "removes first child node"},
+  {"remove_last_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_last_node),
+   METH_VARARGS | METH_KEYWORDS, "removes last child of the node"},
+  {"remove_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_node),
+   METH_VARARGS | METH_KEYWORDS, "removes specified child from the node"},
+  {"remove_all_nodes", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_all_nodes),
+   METH_VARARGS | METH_KEYWORDS, "removes all child nodes"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
