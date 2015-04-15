@@ -161,6 +161,13 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
   return Py_BuildValue("s", xml.c_str());
 }
 
+static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
+                                                  PyObject* args,
+                                                  PyObject* kwds) {
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject* rapidxml_NodeObject___str__(rapidxml_NodeObject* self) {
   PyObject* args;
   PyObject* res;
