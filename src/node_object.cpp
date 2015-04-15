@@ -141,6 +141,46 @@ static PyObject* rapidxml_NodeObject_last_attribute(rapidxml_NodeObject* self,
   return Py_None;
 }
 
+static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
+                                                  PyObject* args,
+                                                  PyObject* kwds) {
+  char kw_node[] = "node";
+  PyObject* node = NULL;
+
+  static char* kwlist[] = {kw_node, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &node) ||
+      !IS_NODE(node)) {
+    goto end;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->prepend_node
+    (static_cast<rapidxml::xml_node<>*>
+     (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
+ end:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_append_node(rapidxml_NodeObject* self,
+                                                 PyObject* args,
+                                                 PyObject* kwds) {
+  char kw_node[] = "node";
+  PyObject* node = NULL;
+
+  static char* kwlist[] = {kw_node, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &node) ||
+      !IS_NODE(node)) {
+    goto end;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->append_node
+    (static_cast<rapidxml::xml_node<>*>
+     (reinterpret_cast<rapidxml_NodeObject*>(node)->base.underlying_obj));
+ end:
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                                              PyObject* args,
                                              PyObject* kwds) {
@@ -159,13 +199,6 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                   *(static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)),
                   !pretty ? rapidxml::print_no_indenting : 0);
   return Py_BuildValue("s", xml.c_str());
-}
-
-static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
-                                                  PyObject* args,
-                                                  PyObject* kwds) {
-  Py_INCREF(Py_None);
-  return Py_None;
 }
 
 static PyObject* rapidxml_NodeObject___str__(rapidxml_NodeObject* self) {
@@ -241,6 +274,10 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
    METH_VARARGS | METH_KEYWORDS, "gets first attribute of node, optionally matching node name"},
   {"last_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_last_attribute),
    METH_VARARGS | METH_KEYWORDS, "gets last attribute of node, optionally matching node name"},
+  {"prepend_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_prepend_node),
+   METH_VARARGS | METH_KEYWORDS, "prepends a new child node"},
+  {"append_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_append_node),
+   METH_VARARGS | METH_KEYWORDS, "appends a new child node"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
