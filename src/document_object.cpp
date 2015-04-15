@@ -111,6 +111,12 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
     Py_INCREF(Py_None);
     return Py_None;
   }
+  if (name) {
+    name = self->base.base.document->allocate_string(name);
+  }
+  if (value) {
+    value = self->base.base.document->allocate_string(value);
+  }
   node = self->base.base.document->allocate_node(rapidxml::node_element, name, value);
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       node, &rapidxml_NodeType);
@@ -130,6 +136,12 @@ static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObj
                                    &name, &value)) {
     Py_INCREF(Py_None);
     return Py_None;
+  }
+  if (name) {
+    name = self->base.base.document->allocate_string(name);
+  }
+  if (value) {
+    value = self->base.base.document->allocate_string(value);
   }
   attribute = self->base.base.document->allocate_attribute(name, value);
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
