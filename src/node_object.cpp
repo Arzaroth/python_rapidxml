@@ -257,6 +257,50 @@ static PyObject* rapidxml_NodeObject_remove_all_nodes(rapidxml_NodeObject* self,
   return Py_None;
 }
 
+static PyObject* rapidxml_NodeObject_prepend_attribute(rapidxml_NodeObject* self,
+                                                       PyObject* args,
+                                                       PyObject* kwds) {
+  char kw_attribute[] = "attribute";
+  PyObject* attribute = NULL;
+
+  static char* kwlist[] = {kw_attribute, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &attribute)) {
+    return NULL;
+  }
+  if (!IS_ATTR(attribute)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Attribute");
+    return NULL;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->prepend_attribute
+    (static_cast<rapidxml::xml_attribute<>*>
+     (reinterpret_cast<rapidxml_AttributeObject*>(attribute)->base.underlying_obj));
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject* rapidxml_NodeObject_append_attribute(rapidxml_NodeObject* self,
+                                                      PyObject* args,
+                                                      PyObject* kwds) {
+  char kw_attribute[] = "attribute";
+  PyObject* attribute = NULL;
+
+  static char* kwlist[] = {kw_attribute, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &attribute)) {
+    return NULL;
+  }
+  if (!IS_ATTR(attribute)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Attribute");
+    return NULL;
+  }
+  static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->append_attribute
+    (static_cast<rapidxml::xml_attribute<>*>
+     (reinterpret_cast<rapidxml_AttributeObject*>(attribute)->base.underlying_obj));
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                                              PyObject* args,
                                              PyObject* kwds) {
@@ -364,6 +408,10 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
    METH_VARARGS | METH_KEYWORDS, "removes specified child from the node"},
   {"remove_all_nodes", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_all_nodes),
    METH_VARARGS | METH_KEYWORDS, "removes all child nodes"},
+  {"prepend_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_prepend_attribute),
+   METH_VARARGS | METH_KEYWORDS, "prepends a new attribute to the node"},
+  {"append_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_append_attribute),
+   METH_VARARGS | METH_KEYWORDS, "appends a new attribute to the node"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}
