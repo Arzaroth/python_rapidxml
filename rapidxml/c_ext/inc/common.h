@@ -11,7 +11,7 @@
 # define COMMON_H_
 
 # if PY_MAJOR_VERSION >= 3
-#  define Py_TPFLAGS_HAVE_ITER 0
+#  define Py_TPFLAGS_HAVE_ITER (0)
 # endif
 
 # include <rapidxml.hpp>
@@ -83,12 +83,12 @@ PyObject* _bind_result(rapidxml_BaseObject*, rapidxml::xml_base<>*, PyTypeObject
 ** Type check macros
 */
 
-# define IS_DOC(o) (Py_TYPE(o) == &rapidxml_DocumentType)
-# define IS_NODE(o) (IS_DOC(o) || (Py_TYPE(o) == &rapidxml_NodeType))
-# define IS_ATTR(o) (Py_TYPE(o) == &rapidxml_AttributeType)
-# define IS_BASE(o) (IS_ATTR(o) || IS_NODE(o) || (Py_TYPE(o) == &rapidxml_BaseType))
+# define IS_DOC(o) ((o) && PyObject_TypeCheck(o, &rapidxml_DocumentType))
+# define IS_NODE(o) ((o) && PyObject_TypeCheck(o, &rapidxml_NodeType))
+# define IS_ATTR(o) ((o) && PyObject_TypeCheck(o, &rapidxml_AttributeType))
+# define IS_BASE(o) ((o) && PyObject_TypeCheck(o, &rapidxml_BaseType))
 
-# define IS_NODEITER(o) (Py_TYPE(o) == &rapidxml_NodeIteratorType)
-# define IS_ATTRITER(o) (Py_TYPE(o) == &rapidxml_AttributeIteratorType)
+# define IS_NODEITER(o) ((o) && PyObject_TypeCheck(o, &rapidxml_NodeIteratorType))
+# define IS_ATTRITER(o) ((o) && PyObject_TypeCheck(o, &rapidxml_AttributeIteratorType))
 
 #endif /* !COMMON_H_ */

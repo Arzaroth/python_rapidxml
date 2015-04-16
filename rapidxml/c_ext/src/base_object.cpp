@@ -36,6 +36,27 @@ static int rapidxml_BaseObject_init(rapidxml_BaseObject* self,
   return 0;
 }
 
+static PyObject* rapidxml_BaseObject_copy(rapidxml_BaseObject* self,
+                                          PyObject* args,
+                                          PyObject* kwds) {
+  PyObject* other = NULL;
+  char kw_other[] = "other";
+
+  static char* kwlist[] = {kw_other, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
+                                   &other)) {
+    return NULL;
+  }
+  if (!IS_BASE(other)) {
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Base");
+    return NULL;
+  }
+  self->underlying_obj = reinterpret_cast<rapidxml_BaseObject*>(other)->underlying_obj;
+  self->document = reinterpret_cast<rapidxml_BaseObject*>(other)->document;
+  Py_INCREF(self);
+  return reinterpret_cast<PyObject*>(self);
+}
+
 static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
                                              PyObject* obj2,
                                              int op) {
@@ -157,6 +178,8 @@ static PyMemberDef rapidxml_BaseObject_members[] = {
 };
 
 static PyMethodDef rapidxml_BaseObject_methods[] = {
+  {"copy", reinterpret_cast<PyCFunction>(rapidxml_BaseObject_copy),
+   METH_VARARGS | METH_KEYWORDS, "copy another Base object, returning current instance"},
   {NULL}
 };
 
