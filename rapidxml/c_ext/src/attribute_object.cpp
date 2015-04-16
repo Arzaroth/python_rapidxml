@@ -74,7 +74,7 @@ static PyMethodDef rapidxml_AttributeObject_methods[] = {
 
 PyTypeObject rapidxml_AttributeType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "rapidxml.Attribute",            /* tp_name */
+  "rapidxml._rapidxml.Attribute",  /* tp_name */
   sizeof(rapidxml_AttributeObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
   0,                               /* tp_dealloc */

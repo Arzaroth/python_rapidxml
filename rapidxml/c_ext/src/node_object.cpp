@@ -156,7 +156,7 @@ static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!IS_NODE(node)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Node");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->prepend_node
@@ -178,7 +178,7 @@ static PyObject* rapidxml_NodeObject_append_node(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!IS_NODE(node)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Node");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->append_node
@@ -202,7 +202,7 @@ static PyObject* rapidxml_NodeObject_insert_node(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!(IS_NODE(where) && IS_NODE(node))) {
-    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml.Node");
+    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml._rapidxml.Node");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->insert_node
@@ -246,7 +246,7 @@ static PyObject* rapidxml_NodeObject_remove_node(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!IS_NODE(node)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Node");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Node");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_node
@@ -276,7 +276,7 @@ static PyObject* rapidxml_NodeObject_prepend_attribute(rapidxml_NodeObject* self
     return NULL;
   }
   if (!IS_ATTR(attribute)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Attribute");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Attribute");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->prepend_attribute
@@ -298,7 +298,7 @@ static PyObject* rapidxml_NodeObject_append_attribute(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!IS_ATTR(attribute)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Attribute");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Attribute");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->append_attribute
@@ -322,7 +322,7 @@ static PyObject* rapidxml_NodeObject_insert_attribute(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!(IS_ATTR(where) && IS_ATTR(attribute))) {
-    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml.Attribute");
+    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml._rapidxml.Attribute");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->insert_attribute
@@ -366,7 +366,7 @@ static PyObject* rapidxml_NodeObject_remove_attribute(rapidxml_NodeObject* self,
     return NULL;
   }
   if (!IS_ATTR(attribute)) {
-    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml.Attribute");
+    PyErr_SetString(PyExc_TypeError, "Expected instance of rapidxml._rapidxml.Attribute");
     return NULL;
   }
   static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)->remove_attribute
@@ -512,7 +512,7 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
 
 PyTypeObject rapidxml_NodeType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "rapidxml.Node",                 /* tp_name */
+  "rapidxml._rapidxml.Node",       /* tp_name */
   sizeof(rapidxml_NodeObject),     /* tp_basicsize */
   0,                               /* tp_itemsize */
   0,                               /* tp_dealloc */

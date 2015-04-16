@@ -164,7 +164,7 @@ static PyMethodDef rapidxml_DocumentObject_methods[] = {
 
 PyTypeObject rapidxml_DocumentType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "rapidxml.Document",             /* tp_name */
+  "rapidxml._rapidxml.Document",   /* tp_name */
   sizeof(rapidxml_DocumentObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
   reinterpret_cast<destructor>(rapidxml_DocumentObject_dealloc), /* tp_dealloc */

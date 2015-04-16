@@ -43,7 +43,7 @@ static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
   bool c;
 
   if (!(IS_BASE(obj1) && IS_BASE(obj2))) {
-    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml.Base");
+    PyErr_SetString(PyExc_TypeError, "Expected instances of rapidxml._rapidxml.Base");
     return NULL;
   }
   switch (op) {
@@ -162,7 +162,7 @@ static PyMethodDef rapidxml_BaseObject_methods[] = {
 
 PyTypeObject rapidxml_BaseType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "rapidxml.Base",                 /* tp_name */
+  "rapidxml._rapidxml.Base",       /* tp_name */
   sizeof(rapidxml_BaseObject),     /* tp_basicsize */
   0,                               /* tp_itemsize */
   reinterpret_cast<destructor>(rapidxml_BaseObject_dealloc), /* tp_dealloc */
