@@ -8,7 +8,7 @@ Example
 
         import rapidxml
 
-        r = rapidxml.Document("<test/><test2>foo</test2><test></test>") # parsing from string
+        r = rapidxml.RapidXml("<test/><test2>foo</test2><test></test>") # parsing from string
         test = r.first_node("test") # get first node named test
         test.name = "foo" # changing node's name to foo
         r.first_node("test2").value = "bar" # changing node's value to bar

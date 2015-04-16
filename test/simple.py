@@ -7,7 +7,7 @@
 #
 import rapidxml
 
-r = rapidxml.Document("<test/><test2>foo</test2><test></test>") # parsing from string
+r = rapidxml.RapidXml("<test/><test2>foo</test2><test></test>") # parsing from string
 test = r.first_node("test") # get first node named test
 assert(test.name == "test")
 assert(test.value == "")
