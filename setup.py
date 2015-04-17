@@ -6,7 +6,6 @@
 # arzaroth@arzaroth.com
 #
 
-import os
 from setuptools import setup, Extension
 
 VERSION = ("1", "0", "0-alpha")
@@ -43,7 +42,7 @@ setup(
     author_email='lekva@arzaroth.com',
 
     description='python bindings for RapidXml, a C++ XML parsing library',
-    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
+    long_description=open('README.md').read(),
     keywords='rapidxml xml parsing',
 
     packages=['rapidxml'],
