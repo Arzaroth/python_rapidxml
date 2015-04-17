@@ -1,0 +1,5 @@
+include ./setup.py
+
+recursive-include ./rapidxml/c_ext/inc *.h *.hpp
+
+prune ./test
