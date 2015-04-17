@@ -42,7 +42,7 @@ setup(
     author_email='lekva@arzaroth.com',
 
     description='python bindings for RapidXml, a C++ XML parsing library',
-    long_description=open('README.md').read(),
+    long_description=open('README').read(),
     keywords='rapidxml xml parsing',
 
     packages=['rapidxml'],
