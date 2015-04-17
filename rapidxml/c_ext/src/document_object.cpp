@@ -90,7 +90,7 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
   }
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
-  if (text) {
+  if (text && *text) {
     rapidxml_DocumentObject_parse(self, args, kwds);
   }
   return 0;
