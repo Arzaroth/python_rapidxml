@@ -8,7 +8,7 @@
 
 from setuptools import setup, Extension
 
-VERSION = ("1", "0", "0-alpha.2")
+VERSION = ("1", "0", "0-alpha.3")
 
 rapidxml = Extension("rapidxml._rapidxml",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
@@ -18,14 +18,14 @@ rapidxml = Extension("rapidxml._rapidxml",
                          './rapidxml/c_ext/inc/rapidxml-1.13/',
                      ],
                      sources=[
-                         "./rapidxml/c_ext/src/common.cpp",
-                         "./rapidxml/c_ext/src/rapidxml_module.cpp",
-                         "./rapidxml/c_ext/src/base_object.cpp",
-                         "./rapidxml/c_ext/src/node_object.cpp",
-                         "./rapidxml/c_ext/src/attribute_object.cpp",
-                         "./rapidxml/c_ext/src/document_object.cpp",
-                         "./rapidxml/c_ext/src/nodeiterator_object.cpp",
-                         "./rapidxml/c_ext/src/attributeiterator_object.cpp",
+                         './rapidxml/c_ext/src/common.cpp',
+                         './rapidxml/c_ext/src/rapidxml_module.cpp',
+                         './rapidxml/c_ext/src/base_object.cpp',
+                         './rapidxml/c_ext/src/node_object.cpp',
+                         './rapidxml/c_ext/src/attribute_object.cpp',
+                         './rapidxml/c_ext/src/document_object.cpp',
+                         './rapidxml/c_ext/src/nodeiterator_object.cpp',
+                         './rapidxml/c_ext/src/attributeiterator_object.cpp',
                      ],
 )
 
