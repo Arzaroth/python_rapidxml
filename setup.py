@@ -6,11 +6,14 @@
 # arzaroth@arzaroth.com
 #
 
-from setuptools import setup, Extension, find_packages
+import os
+from setuptools import setup, Extension
+
+VERSION = ("1", "0", "0-alpha")
 
 rapidxml = Extension("rapidxml._rapidxml",
-                     define_macros=[('MAJOR_VERSION', '1'),
-                                    ('MINOR_VERSION', '0')],
+                     define_macros=[('MAJOR_VERSION', VERSION[0]),
+                                    ('MINOR_VERSION', VERSION[1])],
                      include_dirs=[
                          './rapidxml/c_ext/inc/',
                          './rapidxml/c_ext/inc/rapidxml-1.13/',
@@ -30,13 +33,17 @@ rapidxml = Extension("rapidxml._rapidxml",
 setup(
     ext_modules=[rapidxml],
     name='RapidXml',
-    version='v1.0.0-alpha',
+    version='.'.join(VERSION),
     license='MIT',
+
+    url='https://github.com/Arzaroth/python_rapidxml',
+    download_url='https://github.com/Arzaroth/python_rapidxml/tarball/%s' % ('.'.join(VERSION)),
 
     author='Marc-Etienne Barrut',
     author_email='lekva@arzaroth.com',
 
     description='python bindings for RapidXml, a C++ XML parsing library',
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     keywords='rapidxml xml parsing',
 
     packages=['rapidxml'],
