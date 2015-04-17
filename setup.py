@@ -30,7 +30,7 @@ rapidxml = Extension("rapidxml._rapidxml",
 setup(
     ext_modules=[rapidxml],
     name='RapidXml',
-    version='1.0',
+    version='v1.0.0-alpha',
     license='MIT',
 
     author='Marc-Etienne Barrut',
