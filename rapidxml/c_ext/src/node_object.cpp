@@ -21,6 +21,23 @@ static int rapidxml_NodeObject_init(rapidxml_NodeObject* self,
   return rapidxml_BaseType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds);
 }
 
+static PyObject* rapidxml_NodeObject_clone(rapidxml_NodeObject* self,
+                                           PyObject* args,
+                                           PyObject* kwds) {
+  rapidxml::xml_node<>* node;
+
+  if (self->base.underlying_obj == NULL ||
+      self->base.document == NULL) {
+    PyErr_SetString(rapidxml_RapidXmlError,
+                    "underlying mechanism failed");
+    return NULL;
+  }
+  node = self->base.document->clone_node
+    (static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj));
+  return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
+                      node, &rapidxml_NodeType);
+}
+
 static PyObject* rapidxml_NodeObject_first_node(rapidxml_NodeObject* self,
                                                 PyObject* args,
                                                 PyObject* kwds) {
@@ -465,6 +482,8 @@ static PyMemberDef rapidxml_NodeObject_members[] = {
 };
 
 static PyMethodDef rapidxml_NodeObject_methods[] = {
+  {"clone", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_clone),
+   METH_NOARGS, "clones the xml node and its hierachy"},
   {"first_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_first_node),
    METH_VARARGS | METH_KEYWORDS, "gets first child node, optionally matching node name"},
   {"last_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_last_node),
@@ -484,13 +503,13 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
   {"insert_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_insert_node),
    METH_VARARGS | METH_KEYWORDS, "inserts a new child node at specified place"},
   {"remove_first_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_first_node),
-   METH_VARARGS | METH_KEYWORDS, "removes first child node"},
+   METH_NOARGS, "removes first child node"},
   {"remove_last_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_last_node),
-   METH_VARARGS | METH_KEYWORDS, "removes last child of the node"},
+   METH_NOARGS, "removes last child of the node"},
   {"remove_node", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_node),
    METH_VARARGS | METH_KEYWORDS, "removes specified child from the node"},
   {"remove_all_nodes", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_all_nodes),
-   METH_VARARGS | METH_KEYWORDS, "removes all child nodes"},
+   METH_NOARGS, "removes all child nodes"},
   {"prepend_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_prepend_attribute),
    METH_VARARGS | METH_KEYWORDS, "prepends a new attribute to the node"},
   {"append_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_append_attribute),
@@ -498,13 +517,13 @@ static PyMethodDef rapidxml_NodeObject_methods[] = {
   {"insert_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_insert_attribute),
    METH_VARARGS | METH_KEYWORDS, "inserts a new attribute to the node at specified place"},
   {"remove_first_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_first_attribute),
-   METH_VARARGS | METH_KEYWORDS, "removes first attribute of the node"},
+   METH_NOARGS, "removes first attribute of the node"},
   {"remove_last_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_last_attribute),
-   METH_VARARGS | METH_KEYWORDS, "removes last attribute of the node"},
+   METH_NOARGS, "removes last attribute of the node"},
   {"remove_attribute", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_attribute),
    METH_VARARGS | METH_KEYWORDS, "removes specified attribute from the node"},
   {"remove_all_attributes", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_remove_all_attributes),
-   METH_VARARGS | METH_KEYWORDS, "removes all attributes of the node"},
+   METH_NOARGS, "removes all attributes of the node"},
   {"unparse", reinterpret_cast<PyCFunction>(rapidxml_NodeObject_unparse),
    METH_VARARGS | METH_KEYWORDS, "return xml string"},
   {NULL}

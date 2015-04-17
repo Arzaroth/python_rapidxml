@@ -45,8 +45,5 @@ class DictNode(rapidxml._rapidxml.Node):
             raise KeyError(name)
         return res
 
-    def __setitem__(self, name, value):
-        raise NotImplementedError("WIP")
-
 class RapidXml(DictNode, rapidxml._rapidxml.Document):
     pass
