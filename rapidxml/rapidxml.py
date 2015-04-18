@@ -18,12 +18,12 @@ class DictNode(rapidxml._rapidxml.Node):
         node = self.first_node(name)
         if node is None:
             return None
-        res = [DictNode().copy(node)]
+        res = [DictNode(self.attribute_prefix, self.cdata_key).copy(node)]
         node = node.next_sibling(name)
         if node is None:
             return res[0]
         while node is not None:
-            res.append(DictNode().copy(node))
+            res.append(DictNode(self.attribute_prefix, self.cdata_key).copy(node))
             node = node.next_sibling(name)
         return res
 
