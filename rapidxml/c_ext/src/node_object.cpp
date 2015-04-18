@@ -410,14 +410,12 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
   char kw_pretty[] = "pretty";
 
   static char* kwlist[] = {kw_pretty, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &pretty_obj)) {
-    pretty = 0;
-  } else if (pretty_obj) {
-    pretty = PyObject_IsTrue(pretty_obj);
-  }
+  PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &pretty_obj);
+
   rapidxml::print(std::back_inserter(xml),
                   *(static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)),
-                  !pretty ? rapidxml::print_no_indenting : 0);
+                  ((pretty_obj == NULL) || PyObject_Not(pretty_obj))
+                  ? rapidxml::print_no_indenting : 0);
   return Py_BuildValue("s", xml.c_str());
 }
 
