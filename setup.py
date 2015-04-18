@@ -8,7 +8,7 @@
 
 from setuptools import setup, Extension
 
-VERSION = ("1", "0", "1")
+VERSION = ("1", "0", "2")
 
 rapidxml = Extension("_rapidxml",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
