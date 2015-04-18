@@ -27,32 +27,38 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
                                                PyObject* args,
                                                PyObject* kwds) {
   const char* text = NULL;
-  int from_file = 0;
+  PyObject* text_obj = NULL;
   PyObject* from_file_obj = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   std::vector<char> text_vector;
-  PyObject* res;
 
   static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|O", kwlist,
-                                   &text, &from_file_obj)) {
-    goto fail;
-  }
-  if (from_file_obj) {
-    from_file = PyObject_IsTrue(from_file_obj);
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", kwlist,
+                                   &text_obj, &from_file_obj)) {
+    return NULL;
   }
 
-  if (from_file) {
+  if ((from_file_obj != NULL) && PyObject_IsTrue(from_file_obj)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|O", kwlist,
+                                     &text, &from_file_obj)) {
+      return NULL;
+    }
     std::ifstream f(text, std::ios::binary);
     if (f.fail()) {
       PyErr_SetString(rapidxml_RapidXmlError, strerror(errno));
-      goto fail;
+      return NULL;
     }
     text_vector = std::vector<char>((std::istreambuf_iterator<char>(f)),
                                     std::istreambuf_iterator<char>());
     text_vector.push_back(0);
     text = &text_vector[0];
+  } else {
+    if (!PyByteArray_Check(text_obj)) {
+      PyErr_SetString(PyExc_TypeError, "argument 1 must be bytearray");
+      return NULL;
+    }
+    text = PyByteArray_AsString(text_obj);
   }
   try {
     self->base.base.document->clear();
@@ -61,21 +67,16 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
       (self->base.base.document->allocate_string(text));
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(rapidxml_RapidXmlError, e.what());
-    goto fail;
+    return NULL;
   }
-  res = Py_True;
-  goto end;
- fail:
-  res = Py_False;
- end:
-  Py_INCREF(res);
-  return res;
+  Py_INCREF(Py_None);
+  return Py_None;
 }
 
 static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* args,
                                         PyObject* kwds) {
-  const char* text = NULL;
+  PyObject* text_obj = NULL;
   PyObject* from_file_obj = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
@@ -84,13 +85,13 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
     return -1;
   }
   static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sO", kwlist,
-                                   &text, &from_file_obj)) {
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist,
+                                   &text_obj, &from_file_obj)) {
     return -1;
   }
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
-  if (text && *text) {
+  if (text_obj && PyObject_IsTrue(text_obj)) {
     rapidxml_DocumentObject_parse(self, args, kwds);
   }
   return 0;
