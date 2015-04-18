@@ -163,6 +163,23 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
   return 0;
 }
 
+static PyObject* rapidxml_BaseObject_getparent(rapidxml_BaseObject* self,
+                                               void* closure) {
+  rapidxml::xml_node<>* parent;
+
+  if (self->underlying_obj == NULL || self->document == NULL) {
+    PyErr_SetString(rapidxml_RapidXmlError,
+                    "underlying mechanism failed");
+    return NULL;
+  }
+  parent = self->underlying_obj->parent();
+  if (parent == NULL) {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  return _bind_result(self, parent, &rapidxml_NodeType);
+}
+
 static PyGetSetDef rapidxml_BaseObject_getseters[] = {
   {"name",
    (getter)rapidxml_BaseObject_getname, (setter)rapidxml_BaseObject_setname,
@@ -170,6 +187,9 @@ static PyGetSetDef rapidxml_BaseObject_getseters[] = {
   {"value",
    (getter)rapidxml_BaseObject_getvalue, (setter)rapidxml_BaseObject_setvalue,
    "value of xml entity"},
+  {"parent",
+   (getter)rapidxml_BaseObject_getparent, NULL,
+   "gets node parent"},
   {NULL}
 };
 
