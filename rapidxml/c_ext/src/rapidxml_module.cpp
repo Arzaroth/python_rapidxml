@@ -22,7 +22,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef moduledef = {
   PyModuleDef_HEAD_INIT,
-  "rapidxml._rapidxml",
+  "_rapidxml",
   "python module for rapidxml bindings",
   -1,
   module_methods,
@@ -64,7 +64,7 @@ PyMODINIT_FUNC init_rapidxml(void)
 #if PY_MAJOR_VERSION >= 3
   module = PyModule_Create(&moduledef);
 #else
-  module = Py_InitModule3("rapidxml._rapidxml",
+  module = Py_InitModule3("_rapidxml",
                           module_methods,
                           "rapidxml module for rapidxml bindings");
 #endif
@@ -101,7 +101,7 @@ PyMODINIT_FUNC init_rapidxml(void)
                      "AttributeIterator",
                      reinterpret_cast<PyObject *>(&rapidxml_AttributeIteratorType));
 
-  rapidxml_RapidXmlError = PyErr_NewException("rapidxml._rapidxml.RapidXmlError",
+  rapidxml_RapidXmlError = PyErr_NewException("_rapidxml.RapidXmlError",
                                               NULL, NULL);
   Py_INCREF(rapidxml_RapidXmlError);
   PyModule_AddObject(module,
