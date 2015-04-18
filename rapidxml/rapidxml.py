@@ -6,11 +6,11 @@
 # arzaroth@arzaroth.com
 #
 
-import rapidxml._rapidxml
+import _rapidxml
 
-class DictNode(rapidxml._rapidxml.Node):
+class DictNode(_rapidxml.Node):
     def __init__(self, attribute_prefix='@', cdata_key='#text'):
-        rapidxml._rapidxml.Node.__init__(self)
+        _rapidxml.Node.__init__(self)
         self.attribute_prefix = attribute_prefix
         self.cdata_key = cdata_key
 
@@ -52,11 +52,11 @@ class DictNode(rapidxml._rapidxml.Node):
             raise KeyError(name)
         return res
 
-class RapidXml(DictNode, rapidxml._rapidxml.Document):
+class RapidXml(DictNode, _rapidxml.Document):
     def __init__(self,
                  text="",
                  from_file=False,
                  attribute_prefix='@',
                  cdata_key='#text'):
         DictNode.__init__(self, attribute_prefix, cdata_key)
-        rapidxml._rapidxml.Document.__init__(self, text, from_file)
+        _rapidxml.Document.__init__(self, text, from_file)
