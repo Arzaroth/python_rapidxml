@@ -8,6 +8,20 @@
 
 import _rapidxml
 
+class DictNodeIterator(object):
+    def __init__(self, iterable):
+        self._iter = iterable
+
+    def __next__(self):
+        return self.next()
+
+    def next(self):
+        return DictNode().copy(next(self._iter))
+
+    def __iter__(self):
+        return self
+
+
 class DictNode(_rapidxml.Node):
     def __init__(self, attribute_prefix='@', cdata_key='#text'):
         _rapidxml.Node.__init__(self)
@@ -58,6 +72,10 @@ class DictNode(_rapidxml.Node):
         except:
             return False
         return True
+
+    def __iter__(self):
+        return DictNodeIterator(self.children)
+
 
 class RapidXml(DictNode, _rapidxml.Document):
     def __init__(self,
