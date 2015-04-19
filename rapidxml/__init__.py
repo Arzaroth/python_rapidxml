@@ -6,8 +6,9 @@
 # arzaroth@arzaroth.com
 #
 
-from .rapidxml import RapidXml
+from .rapidxml import RapidXml, DictNode
 
 __all__ = [
     'RapidXml',
+    'DictNode',
     ]
