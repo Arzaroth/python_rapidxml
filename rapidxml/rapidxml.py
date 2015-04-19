@@ -85,3 +85,6 @@ class RapidXml(DictNode, _rapidxml.Document):
                  cdata_key='#text'):
         DictNode.__init__(self, attribute_prefix, cdata_key)
         _rapidxml.Document.__init__(self, text, from_file)
+
+    def allocate_node(self, *args):
+        return DictNode().copy(super(RapidXml, self).allocate_node(*args))
