@@ -52,6 +52,13 @@ class DictNode(_rapidxml.Node):
             raise KeyError(name)
         return res
 
+    def __contains__(self, name):
+        try:
+            self[name]
+        except:
+            return False
+        return True
+
 class RapidXml(DictNode, _rapidxml.Document):
     def __init__(self,
                  text="",
