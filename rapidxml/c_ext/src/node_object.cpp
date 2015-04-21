@@ -404,7 +404,6 @@ static PyObject* rapidxml_NodeObject_remove_all_attributes(rapidxml_NodeObject* 
 static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                                              PyObject* args,
                                              PyObject* kwds) {
-  int pretty = 0;
   PyObject* pretty_obj = NULL;
   std::string xml;
   char kw_pretty[] = "pretty";
