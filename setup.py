@@ -41,8 +41,8 @@ setup(
     author='Marc-Etienne Barrut',
     author_email='lekva@arzaroth.com',
 
-    description='python bindings for RapidXml, a C++ XML parsing library',
-    long_description=open('README').read(),
+    description='Python RapidXml Library'
+    long_description='python bindings for RapidXml, a C++ XML parsing library',
     keywords='rapidxml xml parsing',
 
     packages=find_packages('.'),

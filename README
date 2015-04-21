@@ -2,7 +2,7 @@
 
 A library providing python bindings for rapidxml
 
-## Example
+### Example
 
         import rapidxml
 
@@ -22,7 +22,7 @@ A library providing python bindings for rapidxml
         assert(repr(r) == r.unparse()) # also always True, returns flat version
 
 
-## Install
+### Install
 
 [![Latest Version](https://pypip.in/version/RapidXml/badge.svg)](https://pypi.python.org/pypi/RapidXml/)
 [![Supported Python Versions](https://pypip.in/py_versions/RapidXml/badge.svg)](https://pypi.python.org/pypi/RapidXml/)
@@ -42,18 +42,18 @@ A distribution package can be obtained for manual installation at:
     http://pypi.python.org/pypi/RapidXml
 
 
-## Source
+### Source
 
 python_rapidxml's git repo is available on GitHub, which can be browsed at [github](https://github.com/Arzaroth/python_rapidxml) and cloned like that:
 
     git clone https://github.com/Arzaroth/python_rapidxml.git
 
 
-## License
+### License
 
 MIT license. See the LICENSE file.
 
 
-## Development status
+### Development status
 
 This project is currently under development.
