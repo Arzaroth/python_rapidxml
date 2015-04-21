@@ -19,7 +19,7 @@
 #include <common.h>
 
 static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
-  delete self->base.base.underlying_obj;
+  delete self->base.base.document;
   Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
