@@ -9,3 +9,4 @@ script: python setup.py build
 branches:
   only:
     - master
+    - 1.0
