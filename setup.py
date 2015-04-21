@@ -6,9 +6,9 @@
 # arzaroth@arzaroth.com
 #
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 
-VERSION = ("1", "0", "5")
+VERSION = ("1", "0", "6")
 
 rapidxml = Extension("_rapidxml",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
@@ -45,5 +45,23 @@ setup(
     long_description=open('README').read(),
     keywords='rapidxml xml parsing',
 
-    packages=['rapidxml'],
+    packages=find_packages('.'),
+
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+    ],
 )
