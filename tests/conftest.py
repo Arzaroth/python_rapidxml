@@ -9,7 +9,7 @@
 import pytest
 import rapidxml
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def init_rapidxml():
     r = rapidxml.RapidXml(bytearray(b"""
 <root>
