@@ -15,7 +15,7 @@ def test_children(init_rapidxml):
         assert node.value == ""
         i_node = i_node.next_sibling()
         if i_node:
-            assert i_node != node
+            assert i_node.previous_sibling() == node
 
 def test_attributes(init_rapidxml):
     test = init_rapidxml.first_node().first_node()
@@ -28,4 +28,4 @@ def test_attributes(init_rapidxml):
         assert (i_attr.name, i_attr.value) == expected_attr
         i_attr = i_attr.next_attribute()
         if i_attr:
-            assert i_attr != attr
+            assert i_attr.previous_attribute() == attr
