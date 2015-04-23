@@ -39,19 +39,9 @@ def test_equals(init_rapidxml):
     assert root.first_node() != root.first_node("test2")
     assert (root != root) == (not (root == root))
 
-def test_first_node(init_rapidxml):
-    root = init_rapidxml.first_node()
-    assert root.name == "root"
-    assert root.value == ""
-    assert root.unparse() == init_rapidxml.unparse()
-
-def test_nested_node(init_rapidxml):
-    test = init_rapidxml.first_node().first_node("test")
-    assert test.name == "test"
-    assert test.value == ""
-    test2 = init_rapidxml.first_node().first_node("test2")
-    assert test2.name == "test2"
-    assert test2.value == ""
+def test_parent(init_rapidxml):
+    assert init_rapidxml.parent is None
+    assert init_rapidxml.first_node().parent == init_rapidxml
 
 def test_assign(init_rapidxml):
     root = init_rapidxml.first_node()
