@@ -72,6 +72,10 @@ static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
     c = (reinterpret_cast<rapidxml_BaseObject*>(obj1)->underlying_obj ==
          reinterpret_cast<rapidxml_BaseObject*>(obj2)->underlying_obj);
     break;
+  case Py_NE:
+    c = (reinterpret_cast<rapidxml_BaseObject*>(obj1)->underlying_obj !=
+         reinterpret_cast<rapidxml_BaseObject*>(obj2)->underlying_obj);
+    break;
   default:
     PyErr_SetNone(PyExc_NotImplementedError);
     return NULL;

@@ -28,6 +28,8 @@ def test_init(init_rapidxml):
     assert init_rapidxml.unparse() == ('<root><test attr1="one" attr2="two" attr3="three"/>'
                                        '<test2><node id="1"/><node id="2"/><node id="3"/></test2>'
                                        '<test>some text</test></root>')
+    assert init_rapidxml.unparse() == repr(init_rapidxml)
+    assert init_rapidxml.unparse(True) == str(init_rapidxml)
 
 def test_parse(init_rapidxml):
     r = rapidxml.RapidXml()
@@ -43,6 +45,13 @@ def test_parse_from_file(init_rapidxml, tmpdir):
     f.write(init_rapidxml.unparse())
     r = rapidxml.RapidXml(str(f), from_file=True)
     assert str(r) == str(init_rapidxml)
+
+def test_equals(init_rapidxml):
+    assert init_rapidxml == init_rapidxml
+    root = init_rapidxml.first_node()
+    assert root == init_rapidxml.first_node()
+    assert root.first_node() != root.first_node("test2")
+    assert (root != root) == (not (root == root))
 
 def test_first_node(init_rapidxml):
     root = init_rapidxml.first_node()
