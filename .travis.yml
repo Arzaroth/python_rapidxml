@@ -4,8 +4,11 @@ python:
   - "2.7"
   - "3.3"
   - "3.4"
-install: true
-script: python setup.py build
+install:
+  - pip install -r test-requirements.txt
+  - python setup.py install
+script:
+  - py.test -sv tests
 branches:
   except:
     - dev
