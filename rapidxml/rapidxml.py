@@ -6,7 +6,8 @@
 # arzaroth@arzaroth.com
 #
 
-import _rapidxml
+from __future__ import absolute_import
+import rapidxml.c_ext
 
 class DictNodeIterator(object):
     def __init__(self,
@@ -31,9 +32,9 @@ class DictNodeIterator(object):
         return self
 
 
-class DictNode(_rapidxml.Node):
+class DictNode(rapidxml.c_ext.Node):
     def __init__(self, attribute_prefix='@', cdata_key='#text', always_aslist=False):
-        _rapidxml.Node.__init__(self)
+        rapidxml.c_ext.Node.__init__(self)
         self.attribute_prefix = attribute_prefix
         self.cdata_key = cdata_key
         self.always_aslist = always_aslist
@@ -94,7 +95,7 @@ class DictNode(_rapidxml.Node):
                                 self.always_aslist)
 
 
-class RapidXml(DictNode, _rapidxml.Document):
+class RapidXml(DictNode, rapidxml.c_ext.Document):
     def __init__(self,
                  text="",
                  from_file=False,
@@ -102,7 +103,7 @@ class RapidXml(DictNode, _rapidxml.Document):
                  cdata_key='#text',
                  always_aslist=False):
         DictNode.__init__(self, attribute_prefix, cdata_key, always_aslist)
-        _rapidxml.Document.__init__(self, text, from_file)
+        rapidxml.c_ext.Document.__init__(self, text, from_file)
 
     def allocate_node(self, *args):
         return DictNode(self.attribute_prefix,
