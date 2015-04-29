@@ -8,9 +8,9 @@
 
 from setuptools import setup, Extension, find_packages
 
-VERSION = ("1", "0", "7")
+VERSION = ("2", "0", "0")
 
-rapidxml = Extension("_rapidxml",
+rapidxml = Extension("rapidxml.c_ext",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
                                     ('MINOR_VERSION', VERSION[1])],
                      include_dirs=[

@@ -60,7 +60,7 @@ static PyObject* rapidxml_AttributeIteratorObject_iternext(rapidxml_AttributeIte
 
 PyTypeObject rapidxml_AttributeIteratorType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "_rapidxml.AttributeIterator",   /* tp_name */
+  "rapidxml.c_ext.AttributeIterator", /* tp_name */
   sizeof(rapidxml_AttributeIteratorObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
   reinterpret_cast<destructor>(rapidxml_AttributeIteratorObject_dealloc), /* tp_dealloc */

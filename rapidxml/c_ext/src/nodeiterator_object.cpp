@@ -60,7 +60,7 @@ static PyObject* rapidxml_NodeIteratorObject_iternext(rapidxml_NodeIteratorObjec
 
 PyTypeObject rapidxml_NodeIteratorType = {
   PyVarObject_HEAD_INIT(NULL, 0)
-  "_rapidxml.NodeIterator",        /* tp_name */
+  "rapidxml.c_ext.NodeIterator",   /* tp_name */
   sizeof(rapidxml_NodeIteratorObject), /* tp_basicsize */
   0,                               /* tp_itemsize */
   reinterpret_cast<destructor>(rapidxml_NodeIteratorObject_dealloc), /* tp_dealloc */
