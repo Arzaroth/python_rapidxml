@@ -405,17 +405,32 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
                                              PyObject* args,
                                              PyObject* kwds) {
   PyObject* pretty_obj = NULL;
+  PyObject* raw_obj = NULL;
+  PyObject* res;
   std::string xml;
   char kw_pretty[] = "pretty";
+  char kw_raw[] = "raw";
 
-  static char* kwlist[] = {kw_pretty, NULL};
-  PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &pretty_obj);
+  static char* kwlist[] = {kw_pretty, kw_raw, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist,
+                                   &pretty_obj, &raw_obj)) {
+    return NULL;
+  }
 
   rapidxml::print(std::back_inserter(xml),
                   *(static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)),
                   ((pretty_obj == NULL) || PyObject_Not(pretty_obj))
                   ? rapidxml::print_no_indenting : 0);
-  return Py_BuildValue("s", xml.c_str());
+  if ((raw_obj == NULL) || PyObject_Not(raw_obj)
+#if PY_MAJOR_VERSION < 3
+      || true
+#endif
+      ) {
+    res = Py_BuildValue("s", xml.c_str());
+  } else {
+    res = Py_BuildValue("y", xml.c_str(), xml.length());
+  }
+  return res;
 }
 
 static PyObject* rapidxml_NodeObject___str__(rapidxml_NodeObject* self) {
@@ -432,7 +447,7 @@ static PyObject* rapidxml_NodeObject___repr__(rapidxml_NodeObject* self) {
   PyObject* args;
   PyObject* res;
 
-  args = Py_BuildValue("(O)", Py_False);
+  args = Py_BuildValue("()");
   res = rapidxml_NodeObject_unparse(self, args, NULL);
   Py_DECREF(args);
   return res;

@@ -86,17 +86,28 @@ static PyObject* rapidxml_BaseObject_richcmp(PyObject* obj1,
 }
 
 static PyObject* rapidxml_BaseObject_getname(rapidxml_BaseObject* self,
-                                             void* closure) {
+                                              void* closure) {
+  PyObject* res;
+
   if (self->underlying_obj == NULL) {
-    return Py_BuildValue("s", "");
+    res = Py_BuildValue("s", "");
+  } else {
+    res = Py_BuildValue("s", self->underlying_obj->name());
+#if PY_MAJOR_VERSION >= 3
+    if (res == NULL && PyErr_Occurred()) {
+      res = Py_BuildValue("y",
+                          self->underlying_obj->name(),
+                          self->underlying_obj->name_size());
+    }
+#endif
   }
-  return Py_BuildValue("s", self->underlying_obj->name());
+  return res;
 }
 
 static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
                                        PyObject* arg,
                                        void* closure) {
-  const char* name;
+  Py_buffer name;
 
   if (self->underlying_obj == NULL || self->document == NULL) {
     PyErr_SetString(rapidxml_RapidXmlError,
@@ -105,39 +116,39 @@ static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
   }
   if (arg == NULL) {
     PyErr_SetString(PyExc_TypeError,
-                    "name attribute must not be null");
+                    "Cannot delete name");
     return -1;
   }
-  if (!
-#if PY_MAJOR_VERSION >= 3
-      PyUnicode_Check(arg)
-#else
-      PyString_Check(arg)
-#endif
-      ) {
-    PyErr_SetString(PyExc_TypeError,
-                    "name attribute must be a string");
+  if (!PyArg_Parse(arg, "s*", &name)) {
     return -1;
   }
-  if (!PyArg_Parse(arg, "s", &name)) {
-    return -1;
-  }
-  self->underlying_obj->name(self->document->allocate_string(name));
+  self->underlying_obj->name(self->document->allocate_string(static_cast<const char*>(name.buf)));
   return 0;
 }
 
 static PyObject* rapidxml_BaseObject_getvalue(rapidxml_BaseObject* self,
                                               void* closure) {
+  PyObject* res;
+
   if (self->underlying_obj == NULL) {
-    return Py_BuildValue("s", "");
+    res = Py_BuildValue("s", "");
+  } else {
+    res = Py_BuildValue("s", self->underlying_obj->value());
+#if PY_MAJOR_VERSION >= 3
+    if (res == NULL && PyErr_Occurred()) {
+      res = Py_BuildValue("y",
+                          self->underlying_obj->value(),
+                          self->underlying_obj->value_size());
+    }
+#endif
   }
-  return Py_BuildValue("s", self->underlying_obj->value());
+  return res;
 }
 
 static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
                                         PyObject* arg,
                                         void* closure) {
-  const char* value;
+  Py_buffer value;
 
   if (self->underlying_obj == NULL || self->document == NULL) {
     PyErr_SetString(rapidxml_RapidXmlError,
@@ -146,24 +157,13 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
   }
   if (arg == NULL) {
     PyErr_SetString(PyExc_TypeError,
-                    "value attribute must not be null");
+                    "Cannot delete value");
     return -1;
   }
-  if (!
-#if PY_MAJOR_VERSION >= 3
-      PyUnicode_Check(arg)
-#else
-      PyString_Check(arg)
-#endif
-      ) {
-    PyErr_SetString(PyExc_TypeError,
-                    "value attribute must be a string");
+  if (!PyArg_Parse(arg, "s*", &value)) {
     return -1;
   }
-  if (!PyArg_Parse(arg, "s", &value)) {
-    return -1;
-  }
-  self->underlying_obj->value(self->document->allocate_string(value));
+  self->underlying_obj->value(self->document->allocate_string(static_cast<const char*>(value.buf)));
   return 0;
 }
 

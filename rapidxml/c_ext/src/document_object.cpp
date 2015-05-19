@@ -23,42 +23,23 @@ static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
   Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
-                                               PyObject* args,
-                                               PyObject* kwds) {
-  const char* text = NULL;
-  PyObject* text_obj = NULL;
-  PyObject* from_file_obj = NULL;
-  char kw_text[] = "text";
-  char kw_from_file[] = "from_file";
+static int _parse(rapidxml_DocumentObject* self,
+                  Py_buffer* text_buff,
+                  bool from_file) {
+  const char* text;
   std::vector<char> text_vector;
 
-  static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", kwlist,
-                                   &text_obj, &from_file_obj)) {
-    return NULL;
-  }
-
-  if ((from_file_obj != NULL) && PyObject_IsTrue(from_file_obj)) {
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|O", kwlist,
-                                     &text, &from_file_obj)) {
-      return NULL;
-    }
+  text = static_cast<const char*>(text_buff->buf);
+  if (from_file) {
     std::ifstream f(text, std::ios::binary);
     if (f.fail()) {
       PyErr_SetString(rapidxml_RapidXmlError, strerror(errno));
-      return NULL;
+      return 0;
     }
     text_vector = std::vector<char>((std::istreambuf_iterator<char>(f)),
                                     std::istreambuf_iterator<char>());
     text_vector.push_back(0);
     text = &text_vector[0];
-  } else {
-    if (!PyByteArray_Check(text_obj)) {
-      PyErr_SetString(PyExc_TypeError, "argument 1 must be bytearray");
-      return NULL;
-    }
-    text = PyByteArray_AsString(text_obj);
   }
   try {
     self->base.base.document->clear();
@@ -67,6 +48,27 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
       (self->base.base.document->allocate_string(text));
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(rapidxml_RapidXmlError, e.what());
+    return 0;
+  }
+  return 1;
+}
+
+static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
+                                               PyObject* args,
+                                               PyObject* kwds) {
+  Py_buffer text_buff;
+  PyObject* from_file_obj = NULL;
+  char kw_text[] = "text";
+  char kw_from_file[] = "from_file";
+
+  static char* kwlist[] = {kw_text, kw_from_file, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|O", kwlist,
+                                   &text_buff, &from_file_obj)) {
+    return NULL;
+  }
+
+  if (!_parse(self, &text_buff,
+              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj))) {
     return NULL;
   }
   Py_INCREF(Py_None);
@@ -76,7 +78,7 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
 static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* args,
                                         PyObject* kwds) {
-  PyObject* text_obj = NULL;
+  Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
@@ -85,14 +87,14 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
     return -1;
   }
   static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist,
-                                   &text_obj, &from_file_obj)) {
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*O", kwlist,
+                                   &text_buff, &from_file_obj)) {
     return -1;
   }
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
-  if (text_obj && PyObject_IsTrue(text_obj)) {
-    rapidxml_DocumentObject_parse(self, args, kwds);
+  if (text_buff.buf) {
+    return _parse(self, &text_buff, (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj)) - 1;
   }
   return 0;
 }
@@ -100,21 +102,25 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
 static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* self,
                                                        PyObject* args,
                                                        PyObject* kwds) {
-  const char* name = NULL;
-  const char* value = NULL;
+  const char* name;
+  Py_buffer name_buff = {0};
+  const char* value;
+  Py_buffer value_buff = {0};
   char kw_name[] = "name";
   char kw_value[] = "value";
   rapidxml::xml_node<>* node;
 
   static char* kwlist[] = {kw_name, kw_value, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ss", kwlist,
-                                   &name, &value)) {
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*s*", kwlist,
+                                   &name_buff, &value_buff)) {
     Py_INCREF(Py_None);
     return Py_None;
   }
+  name = static_cast<const char*>(name_buff.buf);
   if (name) {
     name = self->base.base.document->allocate_string(name);
   }
+  value = static_cast<const char*>(value_buff.buf);
   if (value) {
     value = self->base.base.document->allocate_string(value);
   }
@@ -122,25 +128,29 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       node, &rapidxml_NodeType);
 }
-
+#include <iostream>
 static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObject* self,
                                                             PyObject* args,
                                                             PyObject* kwds) {
-  const char* name = NULL;
-  const char* value = NULL;
+  const char* name;
+  Py_buffer name_buff = {0};
+  const char* value;
+  Py_buffer value_buff = {0};
   char kw_name[] = "name";
   char kw_value[] = "value";
   rapidxml::xml_attribute<>* attribute;
 
   static char* kwlist[] = {kw_name, kw_value, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ss", kwlist,
-                                   &name, &value)) {
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*s*", kwlist,
+                                   &name_buff, &value_buff)) {
     Py_INCREF(Py_None);
     return Py_None;
   }
+  name = static_cast<const char*>(name_buff.buf);
   if (name) {
     name = self->base.base.document->allocate_string(name);
   }
+  value = static_cast<const char*>(value_buff.buf);
   if (value) {
     value = self->base.base.document->allocate_string(value);
   }
