@@ -11,7 +11,7 @@ import rapidxml
 
 @pytest.fixture(scope="function")
 def init_rapidxml():
-    r = rapidxml.RapidXml(bytearray(b"""
+    r = rapidxml.RapidXml(b"""
 <root>
   <test attr1="one" attr2="two" attr3="three" />
   <test2>
@@ -20,5 +20,5 @@ def init_rapidxml():
     <node id="3"/>
   </test2>
   <test>some text</test>
-</root>"""))
+</root>""")
     return r
