@@ -22,7 +22,7 @@ def test_parse(init_rapidxml):
         data = init_rapidxml.unparse().encode('utf-8')
     except UnicodeDecodeError:
         data = init_rapidxml.unparse()
-    r.parse(bytearray(data))
+    r.parse(data)
     assert str(r) == str(init_rapidxml)
 
 def test_parse_from_file(init_rapidxml, tmpdir):
