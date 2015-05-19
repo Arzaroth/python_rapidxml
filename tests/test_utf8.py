@@ -11,7 +11,7 @@ import rapidxml
 
 def test_utf8():
     data = "<root>éè</root>"
-    if sys.version_info.major >= 3:
+    if sys.version_info[0] >= 3:
         data = data.encode('utf-8')
     r = rapidxml.RapidXml(data)
     assert str(r) == r.unparse(pretty=True)
