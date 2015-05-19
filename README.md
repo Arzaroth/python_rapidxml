@@ -57,6 +57,6 @@ MIT license. See the LICENSE file.
 
 ### Development status
 
-[![Build Status](https://travis-ci.org/Arzaroth/python_rapidxml.svg?branch=1.0)](https://travis-ci.org/Arzaroth/python_rapidxml)
+[![Build Status](https://travis-ci.org/Arzaroth/python_rapidxml.svg?branch=2.0)](https://travis-ci.org/Arzaroth/python_rapidxml)
 
 This project is currently under development.
