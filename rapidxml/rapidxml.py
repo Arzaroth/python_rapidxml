@@ -101,9 +101,10 @@ class RapidXml(DictNode, rapidxml.c_ext.Document):
                  from_file=False,
                  attribute_prefix='@',
                  cdata_key='#text',
-                 always_aslist=False):
+                 always_aslist=False,
+				 parse_cdata=False):
         DictNode.__init__(self, attribute_prefix, cdata_key, always_aslist)
-        rapidxml.c_ext.Document.__init__(self, text, from_file)
+        rapidxml.c_ext.Document.__init__(self, text, from_file, parse_cdata)
 
     def allocate_node(self, *args):
         return DictNode(self.attribute_prefix,
