@@ -66,7 +66,7 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
                                                PyObject* kwds) {
   Py_buffer text_buff;
   PyObject* from_file_obj = NULL;
-  bool read_cdata = false
+  bool read_cdata = false;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   char kw_parse_cdata[] = "parse_cdata";
@@ -90,7 +90,7 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* kwds) {
   Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
-  bool read_cdata = false
+  bool read_cdata = false;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   char kw_parse_cdata[] = "parse_cdata";
