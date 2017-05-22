@@ -43,7 +43,7 @@ static int _parse(rapidxml_DocumentObject* self,
   }
   try {
     self->base.base.document->clear();
-	if (parse_cdata){
+	if (!parse_cdata){
 		(self->base.base.document
 			->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
 				(self->base.base.document->allocate_string(text));
