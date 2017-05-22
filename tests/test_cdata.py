@@ -8,6 +8,7 @@
 
 import sys
 import rapidxml
+import ast
 
 def test_cdata():
     data = "<ns2:AdditionalData><ns2:Data TID=\"AD_1\"><![CDATA[{\"Cart\":{\"expirationTime\":\"2017-04-22T09:40\",\"id\":\"b469df3b-f626-4fe3-898c-825373e546a2\",\"products\":[\"1223\"],\"creationTime\":\"2017-04-21T09:40\",\"totalPrice\":{\"currencyCode\":\"EUR\",\"amount\":\"138.000\"}}}]]></ns2:Data></ns2:AdditionalData>"
@@ -27,8 +28,6 @@ def test_cdata():
                         }
                 }
         }
-	
-    print("Expected cdata object: " + str(object))
 
     r = rapidxml.RapidXml(data,
                           from_file=False,
@@ -37,10 +36,8 @@ def test_cdata():
                           always_aslist=False,
                           parse_cdata=True)
 
-    print("Cdata object: " + str(r.first_node().first_node().first_node().value))
+    object_received = ast.literal_eval(r.first_node().first_node().first_node().value)
 
-    #object_received = json.load(r.first_node().first_node().first_node().value)
+    print("Cdata object: " + str(object_received))
 
-    #print("Cdata object: " + str(object_received))
-
-    #assert object_received == object
+    assert object_received == object
