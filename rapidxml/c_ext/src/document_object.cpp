@@ -66,19 +66,19 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
                                                PyObject* kwds) {
   Py_buffer text_buff;
   PyObject* from_file_obj = NULL;
-  bool read_cdata = false;
+  PyObject* read_cdata = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   char kw_parse_cdata[] = "parse_cdata";
 
   static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|Op", kwlist,
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|OO", kwlist,
                                    &text_buff, &from_file_obj, &read_cdata)) {
     return NULL;
   }
 
   if (!_parse(self, &text_buff,
-              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), read_cdata)) {
+              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), (read_cdata != NULL) && PyObject_IsTrue(read_cdata))) {
     return NULL;
   }
   Py_INCREF(Py_None);
@@ -90,7 +90,7 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* kwds) {
   Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
-  bool read_cdata = false;
+  PyObject* read_cdata = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
   char kw_parse_cdata[] = "parse_cdata";
@@ -99,14 +99,14 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
     return -1;
   }
   static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*Op", kwlist,
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*OO", kwlist,
                                    &text_buff, &from_file_obj, &read_cdata)) {
     return -1;
   }
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
   if (text_buff.buf) {
-    return _parse(self, &text_buff, (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), read_cdata) - 1;
+    return _parse(self, &text_buff, (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), (read_cdata != NULL) && PyObject_IsTrue(read_cdata)) - 1;
   }
   return 0;
 }
