@@ -115,5 +115,4 @@ def test_assign_cdata(init_rapidxml_with_CDADA):
     test = root.first_node("test")
     test.value = "some new text"
     assert test.value == "some new text"
-    print(str(init_rapidxml_with_CDADA.unparse(parse_cdata=True)))
 
