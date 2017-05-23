@@ -39,3 +39,6 @@ def test_cdata():
     object_received = ast.literal_eval(r.first_node().first_node().first_node().value)
 
     assert object_received == object
+
+
+
