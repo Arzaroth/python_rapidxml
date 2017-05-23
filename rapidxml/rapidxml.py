@@ -110,3 +110,12 @@ class RapidXml(DictNode, rapidxml.c_ext.Document):
         return DictNode(self.attribute_prefix,
                         self.cdata_key,
                         self.always_aslist).copy(super(RapidXml, self).allocate_node(*args))
+
+    def uparse(self, pretty=False, raw=False, parse_cdata=False):
+        if parse_cdata:
+            current_xml = input_xml.first_node()
+            value = current_xml.value + current_xml.uparse(pretty=False, raw=False, parse_cdata=True)
+            return value
+        else:
+            DictNode.uparse(pretty, raw)
+
