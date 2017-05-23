@@ -94,13 +94,13 @@ class DictNode(rapidxml.c_ext.Node):
                                 self.cdata_key,
                                 self.always_aslist)
 
-    def uparse(self, pretty=False, raw=False, parse_cdata=False):
+    def unparse(self, pretty=False, raw=False, parse_cdata=False):
         if parse_cdata:
             current_xml = input_xml.first_node()
-            value = current_xml.value + current_xml.uparse(pretty=False, raw=False, parse_cdata=True)
+            value = current_xml.value + current_xml.unparse(pretty=False, raw=False, parse_cdata=True)
             return value
         else:
-            DictNode.uparse(pretty, raw)
+            DictNode.unparse(pretty, raw)
 
 
 class RapidXml(DictNode, rapidxml.c_ext.Document):
