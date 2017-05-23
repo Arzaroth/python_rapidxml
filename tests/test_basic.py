@@ -59,7 +59,6 @@ def test_assign(init_rapidxml):
                                        '<test>some new text</test></new_root>')
 
 def test_init_cdata(init_rapidxml_with_CDADA):
-    print(str(init_rapidxml_with_CDADA.unparse()))
     datra_str =('<root><test attr1="one" attr2="two" attr3="three"/>'
                 '<test2><node id="1"/><node id="2"/><node id="3"/></test2>'
                 '<test>some text</test>'
