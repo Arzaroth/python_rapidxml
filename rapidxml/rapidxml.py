@@ -94,6 +94,14 @@ class DictNode(rapidxml.c_ext.Node):
                                 self.cdata_key,
                                 self.always_aslist)
 
+    def uparse(self, pretty=False, raw=False, parse_cdata=False):
+        if parse_cdata:
+            current_xml = input_xml.first_node()
+            value = current_xml.value + current_xml.uparse(pretty=False, raw=False, parse_cdata=True)
+            return value
+        else:
+            DictNode.uparse(pretty, raw)
+
 
 class RapidXml(DictNode, rapidxml.c_ext.Document):
     def __init__(self,
@@ -101,11 +109,13 @@ class RapidXml(DictNode, rapidxml.c_ext.Document):
                  from_file=False,
                  attribute_prefix='@',
                  cdata_key='#text',
-                 always_aslist=False):
+                 always_aslist=False,
+				 parse_cdata=False):
         DictNode.__init__(self, attribute_prefix, cdata_key, always_aslist)
-        rapidxml.c_ext.Document.__init__(self, text, from_file)
+        rapidxml.c_ext.Document.__init__(self, text, from_file, parse_cdata)
 
     def allocate_node(self, *args):
         return DictNode(self.attribute_prefix,
                         self.cdata_key,
                         self.always_aslist).copy(super(RapidXml, self).allocate_node(*args))
+
