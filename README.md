@@ -31,11 +31,11 @@ assert(repr(r) == r.unparse(pretty=False, raw=False)) # also always True
 
 If you have downloaded the source code:
 ```sh
-    python setup.py install
+python setup.py install
 ```
 or if you want to obtain a copy from the Pypi repository:
 ```sh
-    pip install rapidxml
+pip install rapidxml
 ```
 Both commands will install the required package dependencies.
 
@@ -48,7 +48,7 @@ A distribution package can be obtained for manual installation at:
 
 python_rapidxml's git repo is available on GitHub, which can be browsed at [github](https://github.com/Arzaroth/python_rapidxml) and cloned like that:
 ```sh
-    git clone https://github.com/Arzaroth/python_rapidxml.git
+git clone https://github.com/Arzaroth/python_rapidxml.git
 ```
 
 ### License
@@ -58,6 +58,6 @@ MIT license. See the LICENSE file.
 
 ### Development status
 
-[![Build Status](https://travis-ci.org/Arzaroth/python_rapidxml.svg?branch=2.0)](https://travis-ci.org/Arzaroth/python_rapidxml)
+[![Build Status](https://travis-ci.org/Arzaroth/python_rapidxml.svg?branch=master)](https://travis-ci.org/Arzaroth/python_rapidxml)
 
 This project is currently under development.
