@@ -16,10 +16,9 @@
 int _parse_args_for_name(PyObject* args,
                          PyObject* kwds,
                          const char** name) {
-  char kw_name[] = "name";
   Py_buffer buf = {0};
 
-  static char* kwlist[] = {kw_name, NULL};
+  static char* kwlist[] = {"name", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*", kwlist,
                                    &buf)) {
     return false;
