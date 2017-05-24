@@ -6,10 +6,23 @@
 # arzaroth@arzaroth.com
 #
 
+import os
+import io
+
 from setuptools import setup, find_packages
 from setuptools import Extension
 
-VERSION = ("2", "1", "0")
+long_descr = 'Python bindings for RapidXml, a C++ XML parsing library'
+try:
+    import pypandoc
+    long_descr = pypandoc.convert('README.md', 'rst')
+    long_descr = long_descr.replace("\r", "")
+except (ImportError, OSError):
+    if os.path.exists('README.md'):
+        with io.open('README.md', encoding="utf-8") as f:
+            long_descr = f.read()
+
+VERSION = ("2", "1", "1")
 
 rapidxml = Extension("rapidxml.c_ext",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
@@ -43,7 +56,7 @@ setup(
     author_email='lekva@arzaroth.com',
 
     description='Python RapidXml Library',
-    long_description='python bindings for RapidXml, a C++ XML parsing library',
+    long_description=long_descr,
     keywords='rapidxml xml parsing',
 
     packages=find_packages('.'),
