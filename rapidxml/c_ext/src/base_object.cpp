@@ -40,9 +40,8 @@ static PyObject* rapidxml_BaseObject_copy(rapidxml_BaseObject* self,
                                           PyObject* args,
                                           PyObject* kwds) {
   PyObject* other = NULL;
-  char kw_other[] = "other";
 
-  static char* kwlist[] = {kw_other, NULL};
+  static char* kwlist[] = {"other", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &other)) {
     return NULL;

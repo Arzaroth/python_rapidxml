@@ -6,7 +6,8 @@
 # arzaroth@arzaroth.com
 #
 
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, find_packages
+from setuptools import Extension
 
 VERSION = ("2", "1", "0")
 
@@ -63,5 +64,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
     ],
 )

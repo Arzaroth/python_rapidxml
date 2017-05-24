@@ -65,11 +65,8 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
   Py_buffer text_buff;
   PyObject* from_file_obj = NULL;
   PyObject* read_cdata = NULL;
-  char kw_text[] = "text";
-  char kw_from_file[] = "from_file";
-  char kw_parse_cdata[] = "parse_cdata";
 
-  static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
+  static char* kwlist[] = {"text", "from_file", "parse_cdata", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|OO", kwlist,
                                    &text_buff, &from_file_obj, &read_cdata)) {
     return NULL;
@@ -90,14 +87,11 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
   Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
   PyObject* read_cdata = NULL;
-  char kw_text[] = "text";
-  char kw_from_file[] = "from_file";
-  char kw_parse_cdata[] = "parse_cdata";
 
   if (rapidxml_NodeType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds) < 0) {
     return -1;
   }
-  static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
+  static char* kwlist[] = {"text", "from_file", "parse_cdata", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*OO", kwlist,
                                    &text_buff, &from_file_obj, &read_cdata)) {
     return -1;
@@ -120,11 +114,9 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
   Py_buffer name_buff = {0};
   const char* value;
   Py_buffer value_buff = {0};
-  char kw_name[] = "name";
-  char kw_value[] = "value";
   rapidxml::xml_node<>* node;
 
-  static char* kwlist[] = {kw_name, kw_value, NULL};
+  static char* kwlist[] = {"name", "value", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*s*", kwlist,
                                    &name_buff, &value_buff)) {
     Py_INCREF(Py_None);
@@ -150,11 +142,9 @@ static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObj
   Py_buffer name_buff = {0};
   const char* value;
   Py_buffer value_buff = {0};
-  char kw_name[] = "name";
-  char kw_value[] = "value";
   rapidxml::xml_attribute<>* attribute;
 
-  static char* kwlist[] = {kw_name, kw_value, NULL};
+  static char* kwlist[] = {"name", "value", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*s*", kwlist,
                                    &name_buff, &value_buff)) {
     Py_INCREF(Py_None);
