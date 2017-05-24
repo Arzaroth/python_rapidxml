@@ -25,7 +25,8 @@ static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
 
 static int _parse(rapidxml_DocumentObject* self,
                   Py_buffer* text_buff,
-                  bool from_file) {
+                  bool from_file,
+                  bool parse_cdata) {
   const char* text;
   std::vector<char> text_vector;
 
@@ -43,9 +44,14 @@ static int _parse(rapidxml_DocumentObject* self,
   }
   try {
     self->base.base.document->clear();
-    (self->base.base.document
-     ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
-      (self->base.base.document->allocate_string(text));
+    char* data = self->base.base.document->allocate_string(text);
+    if (!parse_cdata) {
+      (self->base.base.document
+       ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)(data);
+    } else {
+      (self->base.base.document
+       ->parse<rapidxml::parse_declaration_node>)(data);
+    }
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(rapidxml_RapidXmlError, e.what());
     return 0;
@@ -58,17 +64,20 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
                                                PyObject* kwds) {
   Py_buffer text_buff;
   PyObject* from_file_obj = NULL;
+  PyObject* read_cdata = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
+  char kw_parse_cdata[] = "parse_cdata";
 
-  static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|O", kwlist,
-                                   &text_buff, &from_file_obj)) {
+  static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s*|OO", kwlist,
+                                   &text_buff, &from_file_obj, &read_cdata)) {
     return NULL;
   }
 
   if (!_parse(self, &text_buff,
-              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj))) {
+              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+              (read_cdata != NULL) && PyObject_IsTrue(read_cdata))) {
     return NULL;
   }
   Py_INCREF(Py_None);
@@ -80,21 +89,26 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
                                         PyObject* kwds) {
   Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
+  PyObject* read_cdata = NULL;
   char kw_text[] = "text";
   char kw_from_file[] = "from_file";
+  char kw_parse_cdata[] = "parse_cdata";
 
   if (rapidxml_NodeType.tp_init(reinterpret_cast<PyObject*>(self), args, kwds) < 0) {
     return -1;
   }
-  static char* kwlist[] = {kw_text, kw_from_file, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*O", kwlist,
-                                   &text_buff, &from_file_obj)) {
+  static char* kwlist[] = {kw_text, kw_from_file, kw_parse_cdata, NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*OO", kwlist,
+                                   &text_buff, &from_file_obj, &read_cdata)) {
     return -1;
   }
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
   if (text_buff.buf) {
-    return _parse(self, &text_buff, (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj)) - 1;
+    return (_parse(self, &text_buff,
+                   (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+                   (read_cdata != NULL) && PyObject_IsTrue(read_cdata))
+            - 1);
   }
   return 0;
 }
@@ -128,7 +142,7 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       node, &rapidxml_NodeType);
 }
-#include <iostream>
+
 static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObject* self,
                                                             PyObject* args,
                                                             PyObject* kwds) {
