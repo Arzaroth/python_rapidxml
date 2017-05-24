@@ -22,3 +22,24 @@ def init_rapidxml():
   <test>some text</test>
 </root>""")
     return r
+
+@pytest.fixture(scope="function")
+def init_rapidxml_with_CDADA():
+    data = b"<root><test attr1=\"one\" attr2=\"two\" attr3=\"three\"/><test2><node id=\"1\"/><node id=\"2\"/><node id=\"3\"/></test2><test>some text</test><ns2:AdditionalData><ns2:Data TID=\"AD_1\"><![CDATA[{\"Cart\":{\"expirationTime\":\"2017-04-22T09:40\",\"id\":\"b469df3b-f626-4fe3-898c-825373e546a2\",\"products\":[\"1223\"],\"creationTime\":\"2017-04-21T09:40\",\"totalPrice\":{\"currencyCode\":\"EUR\",\"amount\":\"138.000\"}}}]]></ns2:Data></ns2:AdditionalData></root>"
+    r = rapidxml.RapidXml(data, parse_cdata=True)
+    return r
+
+@pytest.fixture(scope="module")
+def cdata_obj():
+    return {
+        "Cart": {
+            "expirationTime": "2017-04-22T09:40",
+            "id": "b469df3b-f626-4fe3-898c-825373e546a2",
+            "products": ["1223"],
+            "creationTime":"2017-04-21T09:40",
+            "totalPrice": {
+                "currencyCode": "EUR",
+                "amount": "138.000",
+            },
+        },
+    }
