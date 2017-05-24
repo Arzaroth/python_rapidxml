@@ -101,7 +101,7 @@ class RapidXml(DictNode, rapidxml.c_ext.Document):
                  attribute_prefix='@',
                  cdata_key='#text',
                  always_aslist=False,
-				 parse_cdata=False):
+                 parse_cdata=False):
         DictNode.__init__(self, attribute_prefix, cdata_key, always_aslist)
         rapidxml.c_ext.Document.__init__(self, text, from_file, parse_cdata)
 
@@ -109,4 +109,3 @@ class RapidXml(DictNode, rapidxml.c_ext.Document):
         return DictNode(self.attribute_prefix,
                         self.cdata_key,
                         self.always_aslist).copy(super(RapidXml, self).allocate_node(*args))
-

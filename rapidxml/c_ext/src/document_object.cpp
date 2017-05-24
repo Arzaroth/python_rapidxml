@@ -25,7 +25,8 @@ static void rapidxml_DocumentObject_dealloc(rapidxml_DocumentObject* self) {
 
 static int _parse(rapidxml_DocumentObject* self,
                   Py_buffer* text_buff,
-                  bool from_file, bool parse_cdata=false) {
+                  bool from_file,
+                  bool parse_cdata) {
   const char* text;
   std::vector<char> text_vector;
 
@@ -43,17 +44,14 @@ static int _parse(rapidxml_DocumentObject* self,
   }
   try {
     self->base.base.document->clear();
-	if (!parse_cdata){
-		(self->base.base.document
-			->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)
-				(self->base.base.document->allocate_string(text));
-		
-	}else{
-		(self->base.base.document
-			->parse<rapidxml::parse_declaration_node>)
-				(self->base.base.document->allocate_string(text));
-	}
-    
+    char* data = self->base.base.document->allocate_string(text);
+    if (!parse_cdata) {
+      (self->base.base.document
+       ->parse<rapidxml::parse_no_utf8 | rapidxml::parse_no_data_nodes>)(data);
+    } else {
+      (self->base.base.document
+       ->parse<rapidxml::parse_declaration_node>)(data);
+    }
   } catch (rapidxml::parse_error &e) {
     PyErr_SetString(rapidxml_RapidXmlError, e.what());
     return 0;
@@ -78,7 +76,8 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
   }
 
   if (!_parse(self, &text_buff,
-              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), (read_cdata != NULL) && PyObject_IsTrue(read_cdata))) {
+              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+              (read_cdata != NULL) && PyObject_IsTrue(read_cdata))) {
     return NULL;
   }
   Py_INCREF(Py_None);
@@ -106,7 +105,10 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
   if (text_buff.buf) {
-    return _parse(self, &text_buff, (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj), (read_cdata != NULL) && PyObject_IsTrue(read_cdata)) - 1;
+    return (_parse(self, &text_buff,
+                   (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+                   (read_cdata != NULL) && PyObject_IsTrue(read_cdata))
+            - 1);
   }
   return 0;
 }

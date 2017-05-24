@@ -6,7 +6,7 @@
 # arzaroth@arzaroth.com
 #
 
-import ast
+import json
 
 def test_first_node(init_rapidxml):
     root = init_rapidxml.first_node()
@@ -38,26 +38,11 @@ def test_first_node_cdata(init_rapidxml_with_CDADA):
     assert root.first_node() == root.first_node("test")
     assert root.first_node() != root.first_node("test2")
 
-def test_last_node_cdata(init_rapidxml_with_CDADA):
+def test_last_node_cdata(init_rapidxml_with_CDADA, cdata_obj):
     root = init_rapidxml_with_CDADA.first_node()
     assert root.first_node() != root.last_node()
     assert root.first_node("test2") == root.last_node("test2")
-    object = \
-        {
-            "Cart":
-                {
-                    "expirationTime":"2017-04-22T09:40",
-                    "id":"b469df3b-f626-4fe3-898c-825373e546a2",
-                    "products":["1223"],
-                    "creationTime":"2017-04-21T09:40",
-                    "totalPrice":
-                        {
-                            "currencyCode":"EUR",
-                            "amount":"138.000"
-                        }
-                }
-        }
-    assert ast.literal_eval(root.last_node().first_node().first_node().value) == object
+    assert json.loads(root.last_node().first_node().first_node().value) == cdata_obj
 
 def test_nested_node_cdata(init_rapidxml_with_CDADA):
     test = init_rapidxml_with_CDADA.first_node().first_node("test")
