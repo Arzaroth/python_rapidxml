@@ -9,12 +9,20 @@
 import os
 import rapidxml
 
-def test_init(init_rapidxml):
+def test_unparse(init_rapidxml):
     assert init_rapidxml.unparse() == ('<root><test attr1="one" attr2="two" attr3="three"/>'
                                        '<test2><node id="1"/><node id="2"/><node id="3"/></test2>'
                                        '<test>some text</test></root>')
     assert init_rapidxml.unparse() == repr(init_rapidxml)
+    assert init_rapidxml.unparse(False, False) == repr(init_rapidxml)
+    assert init_rapidxml.unparse(raw=False) == repr(init_rapidxml)
+    assert init_rapidxml.unparse(pretty=False) == repr(init_rapidxml)
+    assert init_rapidxml.unparse(pretty=False, raw=False) == repr(init_rapidxml)
     assert init_rapidxml.unparse(True) == str(init_rapidxml)
+    assert init_rapidxml.unparse(True, False) == str(init_rapidxml)
+    assert init_rapidxml.unparse(pretty=True) == str(init_rapidxml)
+    assert init_rapidxml.unparse(pretty=True, raw=False) == str(init_rapidxml)
+    assert init_rapidxml.unparse(True, raw=False) == str(init_rapidxml)
 
 def test_parse(init_rapidxml):
     r = rapidxml.RapidXml()
@@ -115,4 +123,3 @@ def test_assign_cdata(init_rapidxml_with_CDADA):
     test = root.first_node("test")
     test.value = "some new text"
     assert test.value == "some new text"
-

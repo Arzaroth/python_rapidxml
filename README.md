@@ -20,7 +20,7 @@ with open('dump.xml', 'w') as f:
     f.write(str(r))
 r = rapidxml.RapidXml("dump.xml", from_file=True) # loading from file
 
-assert(str(r) == r.unparse(True, False)) # is always True
+assert(str(r) == r.unparse(pretty=True, raw=False)) # is always True
 assert(repr(r) == r.unparse(pretty=False, raw=False)) # also always True
 ```
 

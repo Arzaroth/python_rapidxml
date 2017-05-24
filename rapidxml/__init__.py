@@ -11,4 +11,4 @@ from .rapidxml import RapidXml, DictNode
 __all__ = [
     'RapidXml',
     'DictNode',
-    ]
+]
