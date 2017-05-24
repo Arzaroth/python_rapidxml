@@ -164,10 +164,9 @@ static PyObject* rapidxml_NodeObject_last_attribute(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
                                                   PyObject* args,
                                                   PyObject* kwds) {
-  char kw_node[] = "node";
   PyObject* node = NULL;
 
-  static char* kwlist[] = {kw_node, NULL};
+  static char* kwlist[] = {"node", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &node)) {
     return NULL;
@@ -186,10 +185,9 @@ static PyObject* rapidxml_NodeObject_prepend_node(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_append_node(rapidxml_NodeObject* self,
                                                  PyObject* args,
                                                  PyObject* kwds) {
-  char kw_node[] = "node";
   PyObject* node = NULL;
 
-  static char* kwlist[] = {kw_node, NULL};
+  static char* kwlist[] = {"node", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &node)) {
     return NULL;
@@ -208,12 +206,10 @@ static PyObject* rapidxml_NodeObject_append_node(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_insert_node(rapidxml_NodeObject* self,
                                                  PyObject* args,
                                                  PyObject* kwds) {
-  char kw_where[] = "where";
-  char kw_node[] = "node";
   PyObject* where = NULL;
   PyObject* node = NULL;
 
-  static char* kwlist[] = {kw_where, kw_node, NULL};
+  static char* kwlist[] = {"where", "node", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "OO", kwlist,
                                    &where, &node)) {
     return NULL;
@@ -254,10 +250,9 @@ static PyObject* rapidxml_NodeObject_remove_last_node(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_remove_node(rapidxml_NodeObject* self,
                                                  PyObject* args,
                                                  PyObject* kwds) {
-  char kw_node[] = "node";
   PyObject* node = NULL;
 
-  static char* kwlist[] = {kw_node, NULL};
+  static char* kwlist[] = {"node", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &node)) {
     return NULL;
@@ -284,10 +279,9 @@ static PyObject* rapidxml_NodeObject_remove_all_nodes(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_prepend_attribute(rapidxml_NodeObject* self,
                                                        PyObject* args,
                                                        PyObject* kwds) {
-  char kw_attribute[] = "attribute";
   PyObject* attribute = NULL;
 
-  static char* kwlist[] = {kw_attribute, NULL};
+  static char* kwlist[] = {"attribute", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &attribute)) {
     return NULL;
@@ -306,10 +300,9 @@ static PyObject* rapidxml_NodeObject_prepend_attribute(rapidxml_NodeObject* self
 static PyObject* rapidxml_NodeObject_append_attribute(rapidxml_NodeObject* self,
                                                       PyObject* args,
                                                       PyObject* kwds) {
-  char kw_attribute[] = "attribute";
   PyObject* attribute = NULL;
 
-  static char* kwlist[] = {kw_attribute, NULL};
+  static char* kwlist[] = {"attribute", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &attribute)) {
     return NULL;
@@ -328,12 +321,10 @@ static PyObject* rapidxml_NodeObject_append_attribute(rapidxml_NodeObject* self,
 static PyObject* rapidxml_NodeObject_insert_attribute(rapidxml_NodeObject* self,
                                                       PyObject* args,
                                                       PyObject* kwds) {
-  char kw_where[] = "where";
-  char kw_attribute[] = "attribute";
   PyObject* where = NULL;
   PyObject* attribute = NULL;
 
-  static char* kwlist[] = {kw_where, kw_attribute, NULL};
+  static char* kwlist[] = {"where", "attribute", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "OO", kwlist,
                                    &where, &attribute)) {
     return NULL;
@@ -374,10 +365,9 @@ static PyObject* rapidxml_NodeObject_remove_last_attribute(rapidxml_NodeObject* 
 static PyObject* rapidxml_NodeObject_remove_attribute(rapidxml_NodeObject* self,
                                                       PyObject* args,
                                                       PyObject* kwds) {
-  char kw_attribute[] = "attribute";
   PyObject* attribute = NULL;
 
-  static char* kwlist[] = {kw_attribute, NULL};
+  static char* kwlist[] = {"attribute", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                    &attribute)) {
     return NULL;
@@ -401,27 +391,16 @@ static PyObject* rapidxml_NodeObject_remove_all_attributes(rapidxml_NodeObject* 
   return Py_None;
 }
 
-static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
-                                             PyObject* args,
-                                             PyObject* kwds) {
-  PyObject* pretty_obj = NULL;
-  PyObject* raw_obj = NULL;
-  PyObject* res;
+static PyObject* _unparse(rapidxml_NodeObject* self,
+                          bool pretty,
+                          bool raw) {
+  PyObject* res = NULL;
   std::string xml;
-  char kw_pretty[] = "pretty";
-  char kw_raw[] = "raw";
-
-  static char* kwlist[] = {kw_pretty, kw_raw, NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist,
-                                   &pretty_obj, &raw_obj)) {
-    return NULL;
-  }
 
   rapidxml::print(std::back_inserter(xml),
                   *(static_cast<rapidxml::xml_node<>*>(self->base.underlying_obj)),
-                  ((pretty_obj == NULL) || PyObject_Not(pretty_obj))
-                  ? rapidxml::print_no_indenting : 0);
-  if ((raw_obj == NULL) || PyObject_Not(raw_obj)
+                  !pretty ? rapidxml::print_no_indenting : 0);
+  if (!raw
 #if PY_MAJOR_VERSION < 3
       || true
 #endif
@@ -433,24 +412,35 @@ static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
   return res;
 }
 
-static PyObject* rapidxml_NodeObject___str__(rapidxml_NodeObject* self) {
-  PyObject* args;
-  PyObject* res;
+static PyObject* rapidxml_NodeObject_unparse(rapidxml_NodeObject* self,
+                                             PyObject* args,
+                                             PyObject* kwds) {
+  PyObject* pretty_obj = NULL;
+  PyObject* raw_obj = NULL;
+  PyObject* res = NULL;
+  std::string xml;
 
-  args = Py_BuildValue("(O)", Py_True);
-  res = rapidxml_NodeObject_unparse(self, args, NULL);
-  Py_DECREF(args);
+  static char* kwlist[] = {"pretty", "raw", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO:unparse", kwlist,
+                                   &pretty_obj, &raw_obj)) {
+    return NULL;
+  }
+  Py_XINCREF(pretty_obj);
+  Py_XINCREF(raw_obj);
+  res = _unparse(self,
+                 (pretty_obj != NULL && PyObject_IsTrue(pretty_obj)),
+                 (raw_obj != NULL && PyObject_IsTrue(raw_obj)));
+  Py_XDECREF(pretty_obj);
+  Py_XDECREF(raw_obj);
   return res;
 }
 
-static PyObject* rapidxml_NodeObject___repr__(rapidxml_NodeObject* self) {
-  PyObject* args;
-  PyObject* res;
+static PyObject* rapidxml_NodeObject___str__(rapidxml_NodeObject* self) {
+  return _unparse(self, true, false);
+}
 
-  args = Py_BuildValue("()");
-  res = rapidxml_NodeObject_unparse(self, args, NULL);
-  Py_DECREF(args);
-  return res;
+static PyObject* rapidxml_NodeObject___repr__(rapidxml_NodeObject* self) {
+  return _unparse(self, false, false);
 }
 
 static PyObject* rapidxml_NodeObject_children(rapidxml_NodeObject* self,
