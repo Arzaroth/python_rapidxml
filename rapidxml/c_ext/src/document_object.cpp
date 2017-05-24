@@ -128,7 +128,7 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       node, &rapidxml_NodeType);
 }
-#include <iostream>
+
 static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObject* self,
                                                             PyObject* args,
                                                             PyObject* kwds) {
