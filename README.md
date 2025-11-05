@@ -56,8 +56,3 @@ git clone https://github.com/Arzaroth/python_rapidxml.git
 MIT license. See the LICENSE file.
 
 
-### Development status
-
-[![Build Status](https://travis-ci.org/Arzaroth/python_rapidxml.svg?branch=master)](https://travis-ci.org/Arzaroth/python_rapidxml)
-
-This project is currently under development.

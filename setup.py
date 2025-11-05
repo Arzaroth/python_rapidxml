@@ -22,7 +22,7 @@ except (ImportError, OSError):
         with io.open('README.md', encoding="utf-8") as f:
             long_descr = f.read()
 
-VERSION = ("2", "1", "1")
+VERSION = ("2", "1", "2")
 
 rapidxml = Extension("rapidxml.c_ext",
                      define_macros=[('MAJOR_VERSION', VERSION[0]),
@@ -79,5 +79,12 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
 )

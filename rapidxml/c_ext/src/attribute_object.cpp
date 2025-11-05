@@ -24,18 +24,25 @@ static PyObject* rapidxml_AttributeObject_previous_attribute(rapidxml_AttributeO
                                                              PyObject* args,
                                                              PyObject* kwds) {
   const char* name = NULL;
+  Py_buffer name_buff = {0};
   rapidxml::xml_attribute<>* attribute;
 
-  if (!_parse_args_for_name(args, kwds, &name)) {
+  if (!_parse_args_for_name(args, kwds, &name_buff, &name)) {
     goto err;
   }
   attribute = static_cast<rapidxml::xml_attribute<>*>(self->base.underlying_obj)->previous_attribute(name);
   if (attribute == NULL) {
     goto err;
   }
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       attribute, &rapidxml_AttributeType);
  err:
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -44,18 +51,25 @@ static PyObject* rapidxml_AttributeObject_next_attribute(rapidxml_AttributeObjec
                                                          PyObject* args,
                                                          PyObject* kwds) {
   const char* name = NULL;
+  Py_buffer name_buff = {0};
   rapidxml::xml_attribute<>* attribute;
 
-  if (!_parse_args_for_name(args, kwds, &name)) {
+  if (!_parse_args_for_name(args, kwds, &name_buff, &name)) {
     goto err;
   }
   attribute = static_cast<rapidxml::xml_attribute<>*>(self->base.underlying_obj)->next_attribute(name);
   if (attribute == NULL) {
     goto err;
   }
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       attribute, &rapidxml_AttributeType);
  err:
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
   Py_INCREF(Py_None);
   return Py_None;
 }
