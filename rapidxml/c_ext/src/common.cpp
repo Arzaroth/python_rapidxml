@@ -15,16 +15,21 @@
 
 int _parse_args_for_name(PyObject* args,
                          PyObject* kwds,
+                         Py_buffer* buf,
                          const char** name) {
-  Py_buffer buf = {0};
+  *name = NULL;
+  if (buf != NULL) {
+    buf->buf = NULL;
+    buf->obj = NULL;
+  }
 
   static char* kwlist[] = {"name", NULL};
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|s*", kwlist,
-                                   &buf)) {
+                                   buf)) {
     return false;
   }
-  if (buf.buf) {
-    *name = static_cast<const char*>(buf.buf);
+  if (buf != NULL && buf->buf) {
+    *name = static_cast<const char*>(buf->buf);
   }
   return true;
 }

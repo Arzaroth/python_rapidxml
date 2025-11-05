@@ -106,7 +106,7 @@ static PyObject* rapidxml_BaseObject_getname(rapidxml_BaseObject* self,
 static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
                                        PyObject* arg,
                                        void* closure) {
-  Py_buffer name;
+  Py_buffer name = {0};
 
   if (self->underlying_obj == NULL || self->document == NULL) {
     PyErr_SetString(rapidxml_RapidXmlError,
@@ -122,6 +122,7 @@ static int rapidxml_BaseObject_setname(rapidxml_BaseObject* self,
     return -1;
   }
   self->underlying_obj->name(self->document->allocate_string(static_cast<const char*>(name.buf)));
+  PyBuffer_Release(&name);
   return 0;
 }
 
@@ -147,7 +148,7 @@ static PyObject* rapidxml_BaseObject_getvalue(rapidxml_BaseObject* self,
 static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
                                         PyObject* arg,
                                         void* closure) {
-  Py_buffer value;
+  Py_buffer value = {0};
 
   if (self->underlying_obj == NULL || self->document == NULL) {
     PyErr_SetString(rapidxml_RapidXmlError,
@@ -163,6 +164,7 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
     return -1;
   }
   self->underlying_obj->value(self->document->allocate_string(static_cast<const char*>(value.buf)));
+  PyBuffer_Release(&value);
   return 0;
 }
 

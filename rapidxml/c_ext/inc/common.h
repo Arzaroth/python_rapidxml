@@ -76,7 +76,7 @@ extern PyObject* rapidxml_RapidXmlError;
 ** Utility functions
 */
 
-int _parse_args_for_name(PyObject*, PyObject*, const char**);
+int _parse_args_for_name(PyObject*, PyObject*, Py_buffer*, const char**);
 PyObject* _bind_result(rapidxml_BaseObject*, rapidxml::xml_base<>*, PyTypeObject*);
 
 /*

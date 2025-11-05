@@ -62,7 +62,7 @@ static int _parse(rapidxml_DocumentObject* self,
 static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
                                                PyObject* args,
                                                PyObject* kwds) {
-  Py_buffer text_buff;
+  Py_buffer text_buff = {0};
   PyObject* from_file_obj = NULL;
   PyObject* read_cdata = NULL;
 
@@ -72,9 +72,13 @@ static PyObject* rapidxml_DocumentObject_parse(rapidxml_DocumentObject* self,
     return NULL;
   }
 
-  if (!_parse(self, &text_buff,
-              (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
-              (read_cdata != NULL) && PyObject_IsTrue(read_cdata))) {
+  int parsed = _parse(self, &text_buff,
+                      (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+                      (read_cdata != NULL) && PyObject_IsTrue(read_cdata));
+  if (text_buff.buf) {
+    PyBuffer_Release(&text_buff);
+  }
+  if (!parsed) {
     return NULL;
   }
   Py_INCREF(Py_None);
@@ -99,10 +103,11 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
   self->base.base.underlying_obj = new rapidxml::xml_document<>();
   self->base.base.document = static_cast<rapidxml::xml_document<>*>(self->base.base.underlying_obj);
   if (text_buff.buf) {
-    return (_parse(self, &text_buff,
-                   (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
-                   (read_cdata != NULL) && PyObject_IsTrue(read_cdata))
-            - 1);
+    int parsed = _parse(self, &text_buff,
+                        (from_file_obj != NULL) && PyObject_IsTrue(from_file_obj),
+                        (read_cdata != NULL) && PyObject_IsTrue(read_cdata));
+    PyBuffer_Release(&text_buff);
+    return parsed - 1;
   }
   return 0;
 }
@@ -110,9 +115,9 @@ static int rapidxml_DocumentObject_init(rapidxml_DocumentObject* self,
 static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* self,
                                                        PyObject* args,
                                                        PyObject* kwds) {
-  const char* name;
+  const char* name = NULL;
   Py_buffer name_buff = {0};
-  const char* value;
+  const char* value = NULL;
   Py_buffer value_buff = {0};
   rapidxml::xml_node<>* node;
 
@@ -131,6 +136,12 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
     value = self->base.base.document->allocate_string(value);
   }
   node = self->base.base.document->allocate_node(rapidxml::node_element, name, value);
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
+  if (value_buff.buf) {
+    PyBuffer_Release(&value_buff);
+  }
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       node, &rapidxml_NodeType);
 }
@@ -138,9 +149,9 @@ static PyObject* rapidxml_DocumentObject_allocate_node(rapidxml_DocumentObject* 
 static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObject* self,
                                                             PyObject* args,
                                                             PyObject* kwds) {
-  const char* name;
+  const char* name = NULL;
   Py_buffer name_buff = {0};
-  const char* value;
+  const char* value = NULL;
   Py_buffer value_buff = {0};
   rapidxml::xml_attribute<>* attribute;
 
@@ -159,6 +170,12 @@ static PyObject* rapidxml_DocumentObject_allocate_attribute(rapidxml_DocumentObj
     value = self->base.base.document->allocate_string(value);
   }
   attribute = self->base.base.document->allocate_attribute(name, value);
+  if (name_buff.buf) {
+    PyBuffer_Release(&name_buff);
+  }
+  if (value_buff.buf) {
+    PyBuffer_Release(&value_buff);
+  }
   return _bind_result(reinterpret_cast<rapidxml_BaseObject*>(self),
                       attribute, &rapidxml_AttributeType);
 }

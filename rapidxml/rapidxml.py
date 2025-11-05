@@ -94,7 +94,7 @@ class DictNode(rapidxml.c_ext.Node):
                                 self.cdata_key,
                                 self.always_aslist)
 
-class RapidXml(DictNode, rapidxml.c_ext.Document):
+class RapidXml(rapidxml.c_ext.Document, DictNode):
     def __init__(self,
                  text="",
                  from_file=False,
