@@ -19,7 +19,7 @@ def read_readme():
             return fh.read()
     return 'Python bindings for RapidXml, a C++ XML parsing library'
 
-VERSION = ("2", "1", "3")
+VERSION = ("2", "1", "4")
 
 long_descr = read_readme()
 
