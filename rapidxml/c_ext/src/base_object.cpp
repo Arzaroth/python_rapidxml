@@ -166,21 +166,13 @@ static int rapidxml_BaseObject_setvalue(rapidxml_BaseObject* self,
   char* new_value = self->document->allocate_string(static_cast<const char*>(value.buf));
   self->underlying_obj->value(new_value);
   if (IS_NODE(reinterpret_cast<PyObject*>(self))) {
-    rapidxml::xml_node<>* node =
-      static_cast<rapidxml::xml_node<>*>(self->underlying_obj);
+    rapidxml::xml_node<>* node = static_cast<rapidxml::xml_node<>*>(self->underlying_obj);
     if (node->type() == rapidxml::node_element) {
-      /*
-      ** When the document is parsed with data nodes (parse_cdata=True),
-      ** the element value is held by data/cdata children, which take
-      ** precedence over the element value when printing.
-      ** Keep them in sync: update the first one, drop the others.
-      */
       rapidxml::xml_node<>* child = node->first_node();
       bool found = false;
-      while (child != NULL) {
+      while (child) {
         rapidxml::xml_node<>* next = child->next_sibling();
-        if (child->type() == rapidxml::node_data ||
-            child->type() == rapidxml::node_cdata) {
+        if (child->type() == rapidxml::node_data || child->type() == rapidxml::node_cdata) {
           if (!found) {
             child->value(new_value);
             found = true;
